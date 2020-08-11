@@ -1,0 +1,45 @@
+/*
+#1a1a1d;
+#4E4E50;
+#6F2232;
+#950740;
+#C3073F;
+*/
+
+html body {
+    color: #fff;
+    background-color: #000;
+}
+
+#header {
+    background-color: #1a1a1d;
+}
+
+#header .menu a {
+    color: #C3073F;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+#contents {
+    background-color: #1a1a1d;
+}
+
+#footer {
+    background-color: #1a1a1d;
+}
+
+.light-text .bg-white * {
+    color: #1a1a1d;
+}
+
+input, textarea {
+    margin: auto !important;
+    max-width: 100%;
+}
+
+.btn.red.solid, .btn.red:hover {
+    color: #FFF;
+    background: #950740;
+    border-color: #950740;
+}
