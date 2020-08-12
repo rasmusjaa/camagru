@@ -12,10 +12,22 @@
 					<p>sidebar</p>
 				</div>
 				<div class="col-1-2">
-					<p>main</p>
+					<div class="form">
+						<h3 class="center">Reset Password</h3>
+						<div class="box bg-white no-first-last">
+							<p>
+								<label><small>Enter your email</small></label>
+								<input placeholder="Email" type="email">
+							</p>
+							<p>
+								<a href="#" class="btn red solid">Reset</a>
+							</p>
+						</div>
+					</div>
 				</div>
 				<div class="col-1-4 right">
 					<p>sidebar</p>
+				</div>
 				</div>
 			</div>
 		</div>

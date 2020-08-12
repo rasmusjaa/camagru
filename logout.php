@@ -12,7 +12,7 @@
 					<p>sidebar</p>
 				</div>
 				<div class="col-1-2">
-					<p>main</p>
+
 				</div>
 				<div class="col-1-4 right">
 					<p>sidebar</p>
