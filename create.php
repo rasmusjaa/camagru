@@ -2,6 +2,19 @@
 
 ?>
 
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<script type="text/javascript" src="scripts/script.js"></script>
+	<link rel="stylesheet" type="text/css" href="/camagru/styles/vital.css"/>
+	<link rel="stylesheet" type="text/css" href="/camagru/styles/style.css"/>
+	<link rel="icon" type="image/ico" href="/favicon.ico"/>
+	<title>Camagru</title>
+</head>
+<body class="layouts layouts_index">
+
 <?php require 'header.php';?>
 
 <div class="contents light-text" id="contents">
@@ -40,3 +53,6 @@
 </div>
 
 <?php require 'footer.php';?>
+
+</body>
+</html>

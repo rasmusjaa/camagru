@@ -47,3 +47,7 @@ input, textarea {
 .icon-menu, #menu-toggle:checked + .icon-menu {
 	background-color: #950740;
 }
+
+#canvas {
+	display: none;
+}
