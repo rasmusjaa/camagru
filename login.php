@@ -8,9 +8,9 @@
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<script type="text/javascript" src="scripts/script.js"></script>
-	<link rel="stylesheet" type="text/css" href="/camagru/styles/vital.css"/>
-	<link rel="stylesheet" type="text/css" href="/camagru/styles/style.css"/>
-	<link rel="icon" type="image/ico" href="/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="styles/vital.css"/>
+	<link rel="stylesheet" type="text/css" href="styles/style.css"/>
+	<link rel="icon" type="image/ico" href="favicon.ico"/>
 	<title>Camagru</title>
 </head>
 <body class="layouts layouts_index">
@@ -28,16 +28,18 @@
 					<div class="form">
 						<h3 class="center">Log In</h3>
 						<div class="box bg-white no-first-last">
-							<p>
-								<input placeholder="Username" type="text">
-								<input placeholder="Password" type="password">
-							</p>
-							<p>
-								<a href="#" class="btn red solid">Go</a>
-							</p>
+							<form action="loginuser.php" method="post">
+								<p>
+									<input placeholder="Username" type="text" name="username">
+									<input placeholder="Password" type="password" name="password">
+								</p>
+								<p>
+									<input type="submit" value="Go" class="btn red solid">
+								</p>
+							</form>
 							<hr>
-								<a href="/camagru/create.php" class="btn gray-medium no-outline small">Sign Up</a>
-								<a href="/camagru/reset.php" class="btn gray-medium no-outline small">Forgot Password?</a>
+								<a href="/create.php" class="btn gray-medium no-outline small">Sign Up</a>
+								<a href="/reset.php" class="btn gray-medium no-outline small">Forgot Password?</a>
 						</div>
 					</div>
 				</div>

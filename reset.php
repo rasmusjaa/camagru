@@ -8,9 +8,9 @@
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<script type="text/javascript" src="scripts/script.js"></script>
-	<link rel="stylesheet" type="text/css" href="/camagru/styles/vital.css"/>
-	<link rel="stylesheet" type="text/css" href="/camagru/styles/style.css"/>
-	<link rel="icon" type="image/ico" href="/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="/styles/vital.css"/>
+	<link rel="stylesheet" type="text/css" href="/styles/style.css"/>
+	<link rel="icon" type="image/ico" href="favicon.ico"/>
 	<title>Camagru</title>
 </head>
 <body class="layouts layouts_index">
@@ -28,13 +28,15 @@
 					<div class="form">
 						<h3 class="center">Reset Password</h3>
 						<div class="box bg-white no-first-last">
-							<p>
-								<label><small>Enter your email</small></label>
-								<input placeholder="Email" type="email">
-							</p>
-							<p>
-								<a href="#" class="btn red solid">Reset</a>
-							</p>
+							<form action="resetuser.php" method="post">
+								<p>
+									<label><small>Enter your email</small></label>
+									<input placeholder="Email" type="email" name="email">
+								</p>
+								<p>
+								<input type="submit" value="Send reset link" class="btn red solid">
+								</p>
+							</form>
 						</div>
 					</div>
 				</div>
