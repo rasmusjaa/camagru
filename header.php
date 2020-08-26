@@ -1,5 +1,21 @@
 <?php
 
+	session_start();
+	if (!empty($_SESSION['user']))
+	{
+		$menu = '
+		<li><a href="/logout.php">Log Out</a></li>
+		<li><a href="/account.php">My Account</a></li>
+		<li><a href="/capture.php">New Photo</a></li>
+		';
+	}
+	else
+	{
+		$menu = '
+		<li><a href="/create.php">Sign Up</a></li>
+		<li><a href="/login.php">Log In</a></li>
+		';
+	}
 ?>
 
 <div class="row header light-text" id="header">
@@ -11,11 +27,7 @@
 			<div class="icon-menu"></div>
 
 			<ul class="menu">
-				<li><a href="/create.php">Sign Up</a></li> <!-- toggle -->
-				<li><a href="/login.php">Log In</a></li> <!-- toggle et nakyy vaan jos ei sisal -->
-				<li><a href="/logout.php">Log Out</a></li> <!-- toggle -->
-				<li><a href="/modify.php">My Account</a></li> <!-- toggle -->
-				<li><a href="/capture.php">New Photo</a></li>
+				<?php echo $menu ?>				
 				<li><a href="/index.php">Home</a></li>
 			</ul>
 		</nav>

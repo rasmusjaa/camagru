@@ -1,6 +1,55 @@
 <?php
 
 include ('sendmail.php');
+include ('pdo.php');
+
+function delete_user($user)
+{
+	include ('config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+		
+		$stmt = $pdo->prepare(
+			"DELETE FROM users WHERE username = ?"
+		);
+		$stmt->execute([$user]);
+		$affected = $stmt->rowCount();
+		if ($affected == 1)
+			return (TRUE);
+		return (FALSE);
+	}
+	catch(PDOException $e)
+	{
+	//	echo $e->getMessage() . PHP_EOL;
+		return (FALSE);
+	}
+	$pdo = null;
+}
+
+function dmodify_user($email, $login, $newpassword, $oldpassword)
+{
+	include ('config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+		
+		$stmt = $pdo->prepare(
+			"DELETE FROM users WHERE username = ?"
+		);
+		$stmt->execute([$user]);
+		$affected = $stmt->rowCount();
+		if ($affected == 1)
+			return (TRUE);
+		return (FALSE);
+	}
+	catch(PDOException $e)
+	{
+	//	echo $e->getMessage() . PHP_EOL;
+		return (FALSE);
+	}
+	$pdo = null;
+}
 
 function add_user($login, $pass, $email, $status)
 {
@@ -10,19 +59,22 @@ function add_user($login, $pass, $email, $status)
 		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
 		$hashed_pw = password_hash($pass, PASSWORD_BCRYPT);
 		$verification = md5($login);
-
+		
 		$stmt = $pdo->prepare(
 			"INSERT INTO users (login, pass, email, verification, status)
 			VALUES (?, ?, ?, ?, ?)"
 		);
 		$stmt->execute([$login, $hashed_pw, $email, $verification, $status]);
-		new_user_mail($login, $email, md5($login));
-		return (TRUE);
+		if (!new_user_mail($login, $email, md5($login))) {
+			delete_user($login);
+			return (2);
+		}
+		return (0);
 	}
 	catch(PDOException $e)
 	{
-		echo $e->getMessage() . PHP_EOL;
-		return (FALSE);
+	//	echo $e->getMessage() . PHP_EOL;
+		return (1);
 	}
 	$pdo = null;
 }
@@ -45,7 +97,7 @@ function verify_user($string)
 	}
 	catch(PDOException $e)
 	{
-		echo $e->getMessage() . PHP_EOL;
+	//	echo $e->getMessage() . PHP_EOL;
 		return (FALSE);
 	}
 	$pdo = null;
@@ -63,14 +115,18 @@ function login_user($login, $pass)
 		);
 		$stmt->execute([$login]);
 		$user = $stmt->fetch();
-		if (!$user) // tai status = 0
-			return (FALSE);
-		return (password_verify($pass, $user['pass']));
+		if (!$user)
+			return (1);
+		if ($user['status'] == 0)
+			return (2);
+		if (password_verify($pass, $user['pass']))
+			return (0);
+		return (1);
 	}
 	catch(PDOException $e)
 	{
-		echo $e->getMessage() . PHP_EOL;
-		return (FALSE);
+	//	echo $e->getMessage() . PHP_EOL;
+		return (1);
 	}
 	$pdo = null;
 }

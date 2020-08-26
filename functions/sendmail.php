@@ -40,8 +40,10 @@ function new_user_mail($user, $email, $verification)
 	$mail = $smtp->send($to, $headers, $body);
 
 	if (PEAR::isError($mail)) {
-		echo($mail->getMessage());
+	//	echo($mail->getMessage());
+		return FALSE;
 	} else {
-		echo("Message successfully sent!\n");
+	//	echo("Message successfully sent!\n");
+		return TRUE;
 	}
 }

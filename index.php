@@ -1,5 +1,9 @@
 <?php
 
+session_start();
+if (!empty($_SESSION['user']))
+	$msg = 'Hi ' . $_SESSION['user'];
+	
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +30,7 @@
 				</div>
 				<div class="col-1-2">
 					<p>main</p>
+					<?php echo $msg ?>
 				</div>
 				<div class="col-1-4 right">
 					<p>sidebar</p>

@@ -1,5 +1,37 @@
 <?php
 
+session_start();
+if (!empty($_SESSION['user']))
+	header("Location: /index.php");
+
+if (!empty($_GET['verify']))
+{
+	include ('functions/db_functions.php');
+
+	$msg = '<p style="color: red;">Nothing to verify for this link.</p>';
+	$ret = verify_user($_GET['verify']);
+	if ($ret == TRUE)
+		$msg = '<p style="color: green;">Account verified, you can now log in.</p>';
+}
+
+if (!empty($_GET['action']))
+{
+	include ('functions/db_functions.php');
+
+	if ($_GET['action'] == 'login')
+	{
+		$msg = '<p style="color: red;">Wrong username or password.</p>';
+		$ret = login_user($_POST['username'], $_POST['password']);
+		if ($ret == 2)
+			$msg = '<p style="color: red;">User not verified, check your email.</p>';
+		elseif ($ret == 0)
+		{
+			$_SESSION['user'] = $_POST['username'];
+			header("Location: /index.php");
+		}
+	}
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +60,8 @@
 					<div class="form">
 						<h3 class="center">Log In</h3>
 						<div class="box bg-white no-first-last">
-							<form action="loginuser.php" method="post">
+							<?php echo $msg ?>
+							<form action="login.php?action=login" method="post">
 								<p>
 									<input placeholder="Username" type="text" name="username">
 									<input placeholder="Password" type="password" name="password">
