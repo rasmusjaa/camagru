@@ -1,7 +1,6 @@
 <?php
 
 include ('database.php');
-include (__DIR__ . '/../functions/pdo.php');
 include (__DIR__ . '/../functions/db_functions.php');
 
 try
@@ -10,7 +9,7 @@ try
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$pdo->query("DROP DATABASE IF EXISTS " . $DB);
 	$pdo->query("CREATE DATABASE " . $DB);
-	echo "Database (re)created successfully" . PHP_EOL;
+	echo "Database (re)created successfully<br>" . PHP_EOL;
 }
 catch(PDOException $e)
 {
@@ -34,40 +33,56 @@ try
 		reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
 	);
 
-	echo "Table users created successfully!" . PHP_EOL;
-
+	echo "Table users created successfully!<br>" . PHP_EOL;
 	// Create image table
 	$stmt = $pdo->query(
 		"CREATE TABLE images (
 		id INT(8) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-		CONSTRAINT fk_image_user FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
-		title VARCHAR(128),
+		user_id INT(8) UNSIGNED,
+		CONSTRAINT fk_image_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+		filename VARCHAR(128),
 		date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
 	);
 
-	echo "Table images created successfully!" . PHP_EOL;
+	echo "Table images created successfully!<br>" . PHP_EOL;
 
 	// Create comments table
 	$stmt = $pdo->query(
 		"CREATE TABLE comments (
 		id INT(8) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-		CONSTRAINT fk_comment_image FOREIGN KEY (id) REFERENCES images(id) ON DELETE CASCADE,
-		CONSTRAINT fk_comment_user FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
+		image_id INT(8) UNSIGNED,
+		user_id INT(8) UNSIGNED,
+		CONSTRAINT fk_comment_image FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE CASCADE,
+		CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 		content TEXT,
 		date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
 	);
 
-	echo "Table comments created successfully!" . PHP_EOL;
+	echo "Table comments created successfully!<br>" . PHP_EOL;
 
 	// Create likes table
 	$stmt = $pdo->query(
 		"CREATE TABLE likes (
 		id INT(8) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-		CONSTRAINT fk_like_image FOREIGN KEY (id) REFERENCES images(id) ON DELETE CASCADE,
-		CONSTRAINT fk_like_user FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE)"
+		image_id INT(8) UNSIGNED,
+		user_id INT(8) UNSIGNED,
+		CONSTRAINT fk_like_image FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE CASCADE,
+		CONSTRAINT fk_like_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)"
 	);
 
-	echo "Table likes created successfully!" . PHP_EOL;
+	echo "Table likes created successfully!<br>" . PHP_EOL;
+
+	// Create password reset table
+	$stmt = $pdo->query(
+		"CREATE TABLE password_reset_temp (
+		id INT(8) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		email varchar(256) NOT NULL,
+		code varchar(256) NOT NULL,
+		expDate datetime NOT NULL)"
+	);
+
+	echo "Table for password reset created successfully!<br>" . PHP_EOL;
+
 }
 catch(PDOException $e)
 {
@@ -85,55 +100,18 @@ try
 	$status = 2;
 
 	// Create admin user
-	add_user($login, $pass, $email, $status);
+	if (add_user($login, $pass, $email, $status) == 0)
+		echo "Admin user42 created successfully!<br>" . PHP_EOL;
+	else
+		echo "ERROR creating Admin user42!<br>" . PHP_EOL;
 
-	// $user = $stmt->fetch();
-	// $affected = $stmt->rowCount();
-
-	echo "Admin user42 created successfully!" . PHP_EOL;
-
-/*
-	// Create image table
-	$sql = "CREATE TABLE images (
-		id INT(8) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-		CONSTRAINT fk_image_user FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
-		title VARCHAR(128),
-		date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	)";
-
-	$pdo->exec($sql);
-
-	echo "Table images created successfully!" . PHP_EOL;
-
-	// Create comments table
-	$sql = "CREATE TABLE comments (
-		id INT(8) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-		CONSTRAINT fk_comment_image FOREIGN KEY (id) REFERENCES images(id) ON DELETE CASCADE,
-		CONSTRAINT fk_comment_user FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
-		content TEXT,
-		date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	)";
-
-	$pdo->exec($sql);
-
-	echo "Table comments created successfully!" . PHP_EOL;
-
-	// Create likes table
-	$sql = "CREATE TABLE likes (
-		id INT(8) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-		CONSTRAINT fk_like_image FOREIGN KEY (id) REFERENCES images(id) ON DELETE CASCADE,
-		CONSTRAINT fk_like_user FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
-	)";
-
-	$pdo->exec($sql);
-
-	echo "Table likes created successfully!" . PHP_EOL;
-	*/
 }
 catch(PDOException $e)
 {
 	echo $e->getMessage();
 }
 $pdo = null;
+
+echo "Table likes created successfully!<br>" . PHP_EOL;
 
 ?>

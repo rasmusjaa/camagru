@@ -39,7 +39,6 @@ if (!empty($_GET['action']))
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-	<script type="text/javascript" src="scripts/script.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/vital.css"/>
 	<link rel="stylesheet" type="text/css" href="styles/style.css"/>
 	<link rel="icon" type="image/ico" href="favicon.ico"/>

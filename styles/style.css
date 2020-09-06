@@ -6,10 +6,14 @@
 #C3073F;
 */
 
+/* Body */
+
 html body {
 	color: #fff;
 	background-color: #000;
 }
+
+/* Header */
 
 #header {
 	background-color: #1a1a1d;
@@ -21,22 +25,48 @@ html body {
 	text-transform: uppercase;
 }
 
+.icon-menu, #menu-toggle:checked + .icon-menu {
+	background-color: #950740;
+}
+
+/* Content */
+
 #contents {
 	background-color: #1a1a1d;
 }
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+/* Sidebar */
+
+.right {
+	padding-left: 20px;
+}
+
+/* Footer */
 
 #footer {
 	background-color: #1a1a1d;
 }
 
+/* Texts */
+
 .light-text .bg-white * {
 	color: #1a1a1d;
 }
 
-input, textarea {
-	margin: auto !important;
+/* Forms */
+
+form input, textarea {
+	margin: auto;
 	max-width: 100%;
 }
+
+/* Buttons */
 
 .btn.red.solid, .btn.red:hover {
 	color: #fff;
@@ -44,10 +74,40 @@ input, textarea {
 	border-color: #950740;
 }
 
-.icon-menu, #menu-toggle:checked + .icon-menu {
-	background-color: #950740;
+#savebutton {
+	margin-top: 20px !important;
 }
 
-#canvas {
-	display: none;
+/* Make photo area correct size and responsive */
+
+#photo_area {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	max-width: 1080px;
+}
+
+#dummy {
+	margin-top: 75%; /* 4:3 aspect ratio */
+}
+
+#photo, #video {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* Utlility classes */
+
+.hide {
+	display: none !important;
+}
+
+.center {
+	display: block;
+	margin: auto;
 }

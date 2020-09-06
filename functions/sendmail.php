@@ -47,3 +47,47 @@ function new_user_mail($user, $email, $verification)
 		return TRUE;
 	}
 }
+
+
+function reset_user_mail($user, $email, $key)
+{
+	global $host;
+	global $port;
+	global $username;
+	global $password;
+	global $from;
+
+	$to = $email;
+	$subject = "Reset Camagru password";
+	$url = "http://localhost:8080/reset.php?verify=" . $key;
+	$body = '
+	<!doctype html>
+	<html>
+	<body>
+		<h3>Hello ' . $user . '!</h3>
+		<p>Password reset request was made with your email address, to change password go to
+		<a href="' . $url . '">' . $url . '</a> and reset password within 30 minutes.</p>
+	</body>
+	</html>
+		';
+
+	$headers = array ('Content-Type' => "text/html; charset=ISO-8859-1rn", 'From' => $from, 'To' => $to,'Subject' => $subject);
+	$smtp = Mail::factory('smtp',
+	array ('host' => $host,
+		'port' => $port,
+		'auth' => true,
+		'username' => $username,
+		'password' => $password));
+
+	$mail = $smtp->send($to, $headers, $body);
+
+	if (PEAR::isError($mail)) {
+	//	echo($mail->getMessage());
+		return FALSE;
+	} else {
+	//	echo("Message successfully sent!\n");
+		return TRUE;
+	}
+}
+
+?>

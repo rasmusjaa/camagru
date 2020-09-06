@@ -6,7 +6,7 @@
 		$menu = '
 		<li><a href="/logout.php">Log Out</a></li>
 		<li><a href="/account.php">My Account</a></li>
-		<li><a href="/capture.php">New Photo</a></li>
+		<li><a href="/capture.php">My Photos</a></li>
 		';
 	}
 	else

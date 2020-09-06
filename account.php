@@ -2,12 +2,14 @@
 
 session_start();
 if (empty($_SESSION['user']))
-	header("Location: /index.php");
+header("Location: /index.php");
+
+include ('functions/db_functions.php');
+
+$msg = '<p>Fill at least one field that you want to modify</p>';
 
 if ($_GET['status'] == 'verify')
 {
-	include ('functions/db_functions.php');
-
 	if (!empty($_POST['newpassword']))
 	{
 		$uppercase = preg_match('@[A-Z]@', $_POST['newpassword']);
@@ -15,10 +17,8 @@ if ($_GET['status'] == 'verify')
 		$number    = preg_match('@[0-9]@', $_POST['newpassword']);
 	}
 
-	$msg = '<p style="color: green;">Saved changes.</p>';
-
 	// validate username
-	if (empty($_POST['username']) && empty($_POST['email']) && empty($_POST['newpassword']))
+	if ((empty($_POST['username']) && empty($_POST['email']) && empty($_POST['newpassword'])) || empty($_SESSION['user']))
 		$msg = '<p style="color: red;">Nothing to modify.</p>';
 	elseif (empty($_POST['oldpassword']))
 		$msg = '<p style="color: red;">Need old password to confirm changes.</p>';
@@ -38,14 +38,26 @@ if ($_GET['status'] == 'verify')
 		$msg = '<p style="color: red;">Old password incorrect.</p>';
 	else
 	{
-		$ret = modify_user($_POST['email'], $_POST['username'], $_POST['newpassword'], $_POST['oldpassword']);
+		$ret = modify_user($_SESSION['user'], $_POST['email'], $_POST['username'], $_POST['newpassword'], $_POST['oldpassword']);
+		if ($ret == 0)
+		{
+			$msg = '<p style="color: green;">Account modified successfully.</p>';
+			$_SESSION['user'] = $_POST['username'];
+		}
 		if ($ret == 1)
-			$msg = '<p style="color: red;">User or email already exists, try again.</p>';
+			$msg = '<p style="color: red;">Incorrect password</p>';
 		if ($ret == 2)
-			$msg = '<p style="color: red;">Error sending confirmation email, try again.</p>';
+			$msg = '<p style="color: red;">Username or email already already in use, try again.</p>';
 	}
-		
+}
 
+$cur_login = 'no data';
+$cur_email = 'no data';
+$user_data = get_user($_SESSION['user']);
+if ($user_data)
+{
+	$cur_login = $user_data['login'];
+	$cur_email = $user_data['email'];
 }
 
 ?>
@@ -55,7 +67,6 @@ if ($_GET['status'] == 'verify')
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-	<script type="text/javascript" src="scripts/script.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/vital.css"/>
 	<link rel="stylesheet" type="text/css" href="styles/style.css"/>
 	<link rel="icon" type="image/ico" href="favicon.ico"/>
@@ -75,8 +86,9 @@ if ($_GET['status'] == 'verify')
 				<div class="col-1-2">
 					<div class="form">
 						<h3 class="center">Modify account</h3>
-						<p>Fill at least one field that you want to modify</p>
 						<div class="box bg-white no-first-last">
+							<p>Current username: <?php echo $cur_login ?><br>Current email: <?php echo $cur_email ?></p>
+							<?php echo $msg ?>
 							<form action="account.php?status=verify" method="post">
 								<p>
 									<input placeholder="New Email" type="email" name="email">
