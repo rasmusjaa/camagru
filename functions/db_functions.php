@@ -158,7 +158,7 @@ function get_user_images($login)
 		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
 
 		$stmt = $pdo->prepare(
-			"SELECT * FROM users WHERE login = ?"
+			"SELECT * FROM users WHERE login = ?;"
 		);
 		$stmt->execute([$login]);
 		$user = $stmt->fetch();
@@ -167,11 +167,54 @@ function get_user_images($login)
 		
 		$id = ($user['id']);
 		$stmt = $pdo->prepare(
-			"SELECT id, filename FROM images WHERE user_id = ?"
+			"SELECT id, filename FROM images WHERE user_id = ? ORDER BY id DESC"
 		);
 		$stmt->execute([$id]);
 		$pairs = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 		return ($pairs);
+	}
+	catch(PDOException $e)
+	{
+	//	echo $e->getMessage() . PHP_EOL;
+		return (NULL);
+	}
+	$pdo = null;
+}
+
+function get_all_images($start, $count)
+{
+	include (__DIR__ . '/../config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+
+		$pairs = $pdo->query(
+			"SELECT id, filename FROM images
+			ORDER BY id DESC
+			LIMIT $start, $count"
+		)->fetchAll(PDO::FETCH_KEY_PAIR);
+		return ($pairs);
+	}
+	catch(PDOException $e)
+	{
+	//	echo $e->getMessage() . PHP_EOL;
+		return (NULL);
+	}
+	$pdo = null;
+}
+
+function get_row_count($table)
+{
+	include (__DIR__ . '/../config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+		
+		$stmt = $pdo->query(
+			"SELECT COUNT(*) FROM $table"
+		);
+		$number_of_rows = $stmt->fetchColumn(); 
+		return ($number_of_rows);
 	}
 	catch(PDOException $e)
 	{

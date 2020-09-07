@@ -101,6 +101,59 @@ form input, textarea {
 	height: 100%;
 }
 
+/* Pages */
+.pages img {
+	display: inline-block;
+	width: 44px;
+	padding: 10px;
+	margin: auto;
+}
+
+/* Comments and likes */
+.comments {
+	display: inline-block;
+	width: 90%;
+	background-color: red;
+}
+
+.likes {
+	display: inline-block;
+	position: relative;
+	width: 10%;
+	background-color: black;
+}
+
+.active.heart:before,.active.heart:after{
+	background: red !important;
+}
+.heart {
+    width: 80px;
+	height: 50px;
+	margin: auto;
+    transition: background 0.5s ease;
+}
+.heart:before, .heart:after {
+	transition: background 0.5s ease;
+    position: absolute;
+    content: "";
+    top: 10px;
+    width: 30px;
+    height: 50px;
+    background: dimgrey;
+    border-radius: 50px 50px 0 0;
+    transform: rotate(-45deg);
+	transform-origin: 0 100%;
+	margin: auto;
+}
+.heart:after {
+    transform: rotate(45deg);
+    transform-origin: 50% 30%;
+    margin: auto;
+}
+.redheart:after, .redheart:before {
+	background: red;
+}
+
 /* Utlility classes */
 
 .hide {

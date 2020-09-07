@@ -12,7 +12,8 @@ $images = '<div>';
 
 if ($data)
 {
-	foreach ( array_reverse($data) as $key => $value )
+//	print_r ($data);
+	foreach ($data as $key => $value)
 	{
 		$src = '/user_images/' . $value . '.png';
 		$images = $images . '<img src="' . $src . '">'  . "<br />";

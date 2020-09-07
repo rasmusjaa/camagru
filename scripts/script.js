@@ -21,62 +21,100 @@
 		newbutton = document.getElementById('newbutton');
 		savebutton = document.getElementById('savebutton');
 
-		navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-		.then(function(stream) {
-			video.srcObject = stream;
-			video.play();
-		})
-		.catch(function(err) {
-			console.log("An error occurred: " + err);
-		});
+		
+		if (video)
+		{
+			navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+			.then(function(stream) {
+				video.srcObject = stream;
+				video.play();
+			})
+			.catch(function(err) {
+				console.log("An error occurred: " + err);
+			});
+			video.addEventListener('canplay', function(ev){
+				if (!streaming) {
+				  height = video.videoHeight / (video.videoWidth/width);
+				  if (isNaN(height)) {
+					height = width / (4/3);
+				  }
+	
+				  video.setAttribute('width', width);
+				  video.setAttribute('height', height);
+				  canvas.setAttribute('width', width);
+				  canvas.setAttribute('height', height);
+				  streaming = true;
+				}
+			  }, false);
+	
+			snapbutton.addEventListener('click', function(ev){
+				takepicture();
+				ev.preventDefault();
+				video.classList.add("hide");
+				photo.classList.remove("hide");
+				snapbutton.classList.add("hide");
+				newbutton.classList.remove("hide");
+				savebutton.classList.remove("hide");
+			}, false);
+	
+			newbutton.addEventListener('click', function(ev){
+				photo.classList.add("hide");
+				video.classList.remove("hide");
+				newbutton.classList.add("hide");
+				savebutton.classList.add("hide");
+				snapbutton.classList.remove("hide");
+			}, false);
+	
+			savebutton.addEventListener('click', function(ev){
+				var parameters = {
+					"username" : username, 
+					"image" : data
+				};	
+				AjaxPost("save_image.php", parameters, completedAJAX);
+				photo.classList.add("hide");
+				video.classList.remove("hide");
+				newbutton.classList.add("hide");
+				savebutton.classList.add("hide");
+				snapbutton.classList.remove("hide");
+			}, false);
 
-		video.addEventListener('canplay', function(ev){
-			if (!streaming) {
-			  height = video.videoHeight / (video.videoWidth/width);
-			  if (isNaN(height)) {
-				height = width / (4/3);
-			  }
-
-			  video.setAttribute('width', width);
-			  video.setAttribute('height', height);
-			  canvas.setAttribute('width', width);
-			  canvas.setAttribute('height', height);
-			  streaming = true;
+			function clearphoto() {
+				var context = canvas.getContext('2d');
+				context.fillStyle = "#000";
+				context.fillRect(0, 0, canvas.width, canvas.height);
+		
+				data = canvas.toDataURL('image/png');
+				photo.setAttribute('src', data);
 			}
-		  }, false);
+		
+			function takepicture() {
+				var context = canvas.getContext('2d');
+				if (width && height) {
+				  canvas.width = width;
+				  canvas.height = height;
+				  context.drawImage(video, 0, 0, width, height);
+		
+				  data = canvas.toDataURL('image/png');
+				  photo.setAttribute('src', data);
+				} else {
+				  clearphoto();
+				}
+			}
 
-		snapbutton.addEventListener('click', function(ev){
-			takepicture();
-			ev.preventDefault();
-			video.classList.add("hide");
-			photo.classList.remove("hide");
-			snapbutton.classList.add("hide");
-			newbutton.classList.remove("hide");
-			savebutton.classList.remove("hide");
-		}, false);
+			clearphoto();
+		}
 
-		newbutton.addEventListener('click', function(ev){
-			photo.classList.add("hide");
-			video.classList.remove("hide");
-			newbutton.classList.add("hide");
-			savebutton.classList.add("hide");
-			snapbutton.classList.remove("hide");
-		}, false);
-
-		savebutton.addEventListener('click', function(ev){
-			var parameters = {
-				"username" : username, 
-				"image" : data
-			};	
-			AjaxPost("save_image.php", parameters, completedAJAX);
-			photo.classList.add("hide");
-			video.classList.remove("hide");
-			newbutton.classList.add("hide");
-			savebutton.classList.add("hide");
-			snapbutton.classList.remove("hide");
-		}, false);
-
-		clearphoto();
+		document.querySelectorAll('.heart').forEach(item => {
+			item.addEventListener('click', function(ev) {
+				item.classList.toggle("redheart");
+				var parameters = {
+					"username" : username, 
+		//			"image" : id //taa jostain
+				};	
+		//		AjaxPost("like.php", parameters, completedAJAX);
+			}, false)
+		})
+		
 	}
 
 	function createAjaxRequestObject() {
@@ -122,28 +160,7 @@
 			alert(response);
 	}
 
-	 function clearphoto() {
-		var context = canvas.getContext('2d');
-		context.fillStyle = "#000";
-		context.fillRect(0, 0, canvas.width, canvas.height);
-
-		data = canvas.toDataURL('image/png');
-		photo.setAttribute('src', data);
-	  }
-
-	  function takepicture() {
-		var context = canvas.getContext('2d');
-		if (width && height) {
-		  canvas.width = width;
-		  canvas.height = height;
-		  context.drawImage(video, 0, 0, width, height);
-
-		  data = canvas.toDataURL('image/png');
-		  photo.setAttribute('src', data);
-		} else {
-		  clearphoto();
-		}
-	  }
+	
 
 	window.addEventListener('load', startup, false);
 })();
