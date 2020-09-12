@@ -150,6 +150,74 @@ function add_image($login, $filename)
 	$pdo = null;
 }
 
+function add_like($login, $image)
+{
+	include (__DIR__ . '/../config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+		$data = $pdo->query(
+			"DELETE FROM likes WHERE user_id=$login AND image_id=$image;"
+		);
+		$affected = $data->rowCount();
+		if ($affected > 0)
+			return (0);
+		$pdo->query(
+			"INSERT INTO likes (user_id, image_id)
+			VALUES ($login, $image);"
+		);
+		return (0);
+	}
+	catch(PDOException $e)
+	{
+//		echo $e->getMessage() . PHP_EOL;
+		return (1);
+	}
+	$pdo = null;
+}
+
+function add_comment($login, $image, $comment)
+{
+	include (__DIR__ . '/../config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+		$stmt = $pdo->prepare(
+			"INSERT INTO comments (user_id, image_id, content)
+			VALUES ($login, $image, ?);"
+		);
+		$stmt->execute([$comment]);
+		return (0);
+	}
+	catch(PDOException $e)
+	{
+//		echo $e->getMessage() . PHP_EOL;
+		return (1);
+	}
+	$pdo = null;
+}
+
+function has_liked($login, $image)
+{
+	include (__DIR__ . '/../config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+		$data = $pdo->query(
+			"SELECT * FROM likes WHERE user_id=$login AND image_id=$image;"
+		)->fetchAll();
+		if ($data)
+			return (0);
+		return (1);
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage() . PHP_EOL;
+		return (-1);
+	}
+	$pdo = null;
+}
+
 function get_user_images($login)
 {
 	include (__DIR__ . '/../config/database.php');
@@ -158,20 +226,49 @@ function get_user_images($login)
 		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
 
 		$stmt = $pdo->prepare(
-			"SELECT * FROM users WHERE login = ?;"
+			"SELECT images.id, images.filename FROM images
+			INNER JOIN users      
+			ON images.user_id = users.id
+			WHERE users.login = ? ORDER BY id DESC;"
 		);
 		$stmt->execute([$login]);
-		$user = $stmt->fetch();
-		if (!$user)
-			return (3);
-		
-		$id = ($user['id']);
+		$data = $stmt->fetchAll();
+		return ($data);
+	}
+	catch(PDOException $e)
+	{
+	//	echo $e->getMessage() . PHP_EOL;
+		return (NULL);
+	}
+	$pdo = null;
+}
+
+function delete_user_image($id)
+{
+	include (__DIR__ . '/../config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+
 		$stmt = $pdo->prepare(
-			"SELECT id, filename FROM images WHERE user_id = ? ORDER BY id DESC"
+			"SELECT * FROM images WHERE id = ?"
 		);
 		$stmt->execute([$id]);
-		$pairs = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-		return ($pairs);
+		$data = $stmt->fetch();
+		if (!$data)
+		{
+			echo 'No image to remove';
+			return (-1);
+		}
+		$file = __DIR__ . '/../user_images/' . $data[filename] . '.png';
+		if (!unlink($file)) {  
+			echo ("Image cannot be deleted due to an error");
+			return (-1); 
+		}
+		$stmt = $pdo->prepare(
+			"DELETE FROM images WHERE id = ?;"
+		);
+		$stmt->execute([$id]);
 	}
 	catch(PDOException $e)
 	{
@@ -188,12 +285,38 @@ function get_all_images($start, $count)
 	{
 		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
 
-		$pairs = $pdo->query(
-			"SELECT id, filename FROM images
-			ORDER BY id DESC
+		$data = $pdo->query(
+			"SELECT images.id, images.user_id, images.filename, images.date, users.login FROM images
+			INNER JOIN users      
+			ON images.user_id = users.id
+			ORDER BY images.id DESC
 			LIMIT $start, $count"
-		)->fetchAll(PDO::FETCH_KEY_PAIR);
-		return ($pairs);
+		)->fetchAll();
+		return ($data);
+	}
+	catch(PDOException $e)
+	{
+	//	echo $e->getMessage() . PHP_EOL;
+		return (NULL);
+	}
+	$pdo = null;
+}
+
+function get_all_comments($id)
+{
+	include (__DIR__ . '/../config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+
+		$data = $pdo->query(
+			"SELECT * FROM comments
+			INNER JOIN users      
+			ON comments.user_id = users.id
+			WHERE image_id = $id
+			ORDER BY comments.id DESC;"
+		)->fetchAll();
+		return ($data);
 	}
 	catch(PDOException $e)
 	{
@@ -210,11 +333,29 @@ function get_row_count($table)
 	{
 		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
 		
-		$stmt = $pdo->query(
+		$count = $pdo->query(
 			"SELECT COUNT(*) FROM $table"
-		);
-		$number_of_rows = $stmt->fetchColumn(); 
-		return ($number_of_rows);
+		)->fetchColumn(); 
+		return ($count);
+	}
+	catch(PDOException $e)
+	{
+	//	echo $e->getMessage() . PHP_EOL;
+		return (NULL);
+	}
+	$pdo = null;
+}
+
+function get_row_count_of_image_id($table, $id)
+{
+	include (__DIR__ . '/../config/database.php');
+	try
+	{
+		$pdo = create_pdo_connection($DB_DSN, $DB_USER, $DB_PASSWORD);
+		$count = $pdo->query(
+			"SELECT COUNT(*) FROM $table where image_id = $id"
+		)->fetchColumn(); 
+		return ($count);
 	}
 	catch(PDOException $e)
 	{
@@ -261,17 +402,17 @@ function login_user($login, $pass)
 		$stmt->execute([$login]);
 		$user = $stmt->fetch();
 		if (!$user)
-			return (1);
+			return (-1);
 		if ($user['status'] == 0)
-			return (2);
+			return (-2);
 		if (password_verify($pass, $user['pass']))
-			return (0);
-		return (1);
+			return ($user['id']);
+		return (-1);
 	}
 	catch(PDOException $e)
 	{
 	//	echo $e->getMessage() . PHP_EOL;
-		return (1);
+		return (-1);
 	}
 	$pdo = null;
 }

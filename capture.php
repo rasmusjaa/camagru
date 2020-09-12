@@ -1,26 +1,13 @@
 <?php
 
-include ('functions/db_functions.php');
+include ('functions.php');
 
 session_start();
 if (empty($_SESSION['user']))
 	header("Location: /index.php");
 
-$data = get_user_images($_SESSION['user']);
+$images = reload_user_images($_SESSION['user']);
 
-$images = '<div>';
-
-if ($data)
-{
-//	print_r ($data);
-	foreach ($data as $key => $value)
-	{
-		$src = '/user_images/' . $value . '.png';
-		$images = $images . '<img src="' . $src . '">'  . "<br />";
-	}
-}
-
-$images . '</div>';
 
 ?>
 
@@ -40,7 +27,7 @@ $images . '</div>';
 
 <?php require 'header.php';?>
 
-<div class="contents light-text" id="contents">
+<div class="contents" id="contents">
 	<div class="row center">
 		<div class="section">
 			<div class="autogrid">

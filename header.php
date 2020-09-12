@@ -18,10 +18,10 @@
 	}
 ?>
 
-<div class="row header light-text" id="header">
+<div class="row header" id="header">
 	<div class="section">
 		<nav>
-			<a href="/" class="logo"><img src="/favicon.ico" alt="Logo"></a>
+			<a href="/" class="logo"><img src="/icons/camagru-logo.png" alt="Logo"></a>
 			<label for="menu-toggle" id="menu-toggle-label"></label>
 			<input id="menu-toggle" type="checkbox">
 			<div class="icon-menu"></div>

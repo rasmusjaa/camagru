@@ -78,7 +78,7 @@ if (!empty($_GET['verify']))
 
 <?php require 'header.php';?>
 
-<div class="contents light-text" id="contents">
+<div class="contents" id="contents">
 	<div class="row center">
 		<div class="section">
 			<div class="autogrid">

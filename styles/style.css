@@ -1,44 +1,97 @@
 /*
+
+#ec4c4c
+
 #1a1a1d;
 #4E4E50;
 #6F2232;
-#950740;
+#ec4c4c;
 #C3073F;
 */
 
 /* Body */
 
 html body {
-	color: #fff;
-	background-color: #000;
+	color: #000;
+	background-color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
 }
 
 /* Header */
 
 #header {
-	background-color: #1a1a1d;
+	background-color: #fff;
+	border-bottom: 1px solid #eee;
 }
 
 #header .menu a {
-	color: #C3073F;
-	font-weight: 900;
-	text-transform: uppercase;
+	color: #ec4c4c;
+	letter-spacing: 1px;
 }
 
+.header .logo {
+	width: 150px;
+}
+
+.header .logo img {
+	margin: 0;
+	margin-top: 15%;
+	margin-left: 30px;
+}
+
+
 .icon-menu, #menu-toggle:checked + .icon-menu {
-	background-color: #950740;
+	background-color: #ec4c4c;
 }
 
 /* Content */
 
 #contents {
-	background-color: #1a1a1d;
+	background-color: #fff;
 }
 
 img {
 	display: block;
 	max-width: 100%;
 	height: auto;
+}
+
+.feed_img {
+	width: 100%;
+	max-width: 640px;
+	margin: 30px auto;
+	display: inline-block;
+	position: relative;
+	clear: both;
+}
+
+.image_user{
+	float: left;
+	margin: 0;
+}
+
+.image_date{
+	float: right;
+	margin: 0;
+	top: 1em;
+}
+
+.single_photo {
+	position: relative;
+}
+
+.delete_image {
+	position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #fff;
+    background: #ec4c4c;
+    padding: 0px 9px;
+	border-radius: 50%;
+	cursor:	pointer;
 }
 
 /* Sidebar */
@@ -70,8 +123,8 @@ form input, textarea {
 
 .btn.red.solid, .btn.red:hover {
 	color: #fff;
-	background: #950740;
-	border-color: #950740;
+	background: #ec4c4c;
+	border-color: #ec4c4c;
 }
 
 #savebutton {
@@ -110,25 +163,97 @@ form input, textarea {
 }
 
 /* Comments and likes */
+
+input[type="submit"] {
+	background: #ec4c4c;
+	border: 1px solid #ec4c4c;
+	color: #fff;
+	border-radius: 0;
+	font-weight: 400;
+    letter-spacing: 1px;
+}
+
 .comments {
-	display: inline-block;
-	width: 90%;
-	background-color: red;
+	width: 85%;
+	float: left;
+	min-height: 70px;;
+}
+
+.comment {
+	float: left;
+    width: 100%;
+    padding: 5px 10px;
+    margin: 0px;
+	border: 1px solid #eee;
+	border-top: 0px;
+}
+
+.comment_date {
+	float: right;
+	width: 50%;
+	text-align: right;
+	top: 1em;
+}
+
+.comment_user {
+	float: left;
+	width: 50%;
+	text-align: left;
+	font-weight: 700;
+}
+
+.comment_text {
+	float: left;
+	width: 100%;
+	text-align: left;
+}
+
+.comment_form {
+    float: left;
+	width: 100%;
+	position: relative;
+}
+
+.comment_field {
+	width: 100%;
+	padding: 9px 65px 9px 10px;
+	margin:0;
+	height: 70px;
+	border-radius: 0;
+	background-color: #f5f5f5;
+}
+
+.comment_field.disabled {
+	background-color: #1a1a1d;
+	border: 1px solid #1a1a1d;
+}
+
+.comment_button {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	margin:0;
+	height: 70px;
 }
 
 .likes {
-	display: inline-block;
 	position: relative;
-	width: 10%;
-	background-color: black;
+	width: 15%;
+	border: 1px solid #EEE;
+	float: left;
+	height: 70px;
+}
+
+.likes p {
+	margin: 0;
 }
 
 .active.heart:before,.active.heart:after{
 	background: red !important;
 }
 .heart {
-    width: 80px;
-	height: 50px;
+    width: 40px;
+	height: 40px;
 	margin: auto;
     transition: background 0.5s ease;
 }
@@ -137,8 +262,8 @@ form input, textarea {
     position: absolute;
     content: "";
     top: 10px;
-    width: 30px;
-    height: 50px;
+    width: 15px;
+    height: 25px;
     background: dimgrey;
     border-radius: 50px 50px 0 0;
     transform: rotate(-45deg);
