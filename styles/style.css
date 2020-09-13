@@ -107,6 +107,7 @@ img {
 	float: left;
 	width: 23%;
 	margin: 10px 1%;
+	border: 1px solid #eee;
 }
 
 #overlaid {
@@ -127,6 +128,29 @@ img {
         0 0 5px #fff,            /* outer white */
         -10px 0 8px #f0f,        /* outer left magenta */
         10px 0 8px #0ff;         /* outer right cyan */
+}
+
+#warning {
+	color: red;
+}
+
+.greyed {
+	background-color: #242429 !important;
+	opacity: 1 !important;
+	border: 1px solid #242429 !important;
+	color: #BBB !important;
+}
+
+.greyed:hover {
+	background-color: #242429 !important;
+	opacity: 1 !important;
+	border: 1px solid #242429 !important;
+	color: #BBB;
+	cursor: default;
+}
+
+.greyed .heart:hover {
+	cursor: default;
 }
 
 /* Sidebar */
@@ -162,7 +186,11 @@ form input, textarea {
 	border-color: #ec4c4c;
 }
 
-#savebutton {
+#snapbutton, #newbutton {
+	margin-top: 14px !important;
+}
+
+#savebutton, #uploadbutton {
 	margin-top: 20px !important;
 }
 

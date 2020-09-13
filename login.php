@@ -22,7 +22,6 @@ if (!empty($_GET['action']))
 	{
 		$msg = '<p style="color: red;">Wrong username or password.</p>';
 		$ret = login_user($_POST['username'], $_POST['password']);
-		$msg = '<p style="color: red;">' . $ret . '</p>';
 		if ($ret == -2)
 			$msg = '<p style="color: red;">User not verified, check your email.</p>';
 		elseif ($ret > 0)
@@ -55,7 +54,7 @@ if (!empty($_GET['action']))
 		<div class="section">
 			<div class="autogrid">
 				<div class="col-1-4 left">
-					<p>sidebar</p>
+					<p></p>
 				</div>
 				<div class="col-1-2">
 					<div class="form">
@@ -78,7 +77,7 @@ if (!empty($_GET['action']))
 					</div>
 				</div>
 				<div class="col-1-4 right">
-					<p>sidebar</p>
+					<p></p>
 				</div>
 			</div>
 		</div>

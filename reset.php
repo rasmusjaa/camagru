@@ -18,7 +18,6 @@ $form = '<form action="reset.php?status=reset" method="post">
 
 if ($_GET['status'] == 'reset')
 {
-
 	$msg = '<p style="color: green;">Reset instructions sent if account with given email exists.</p>';
 	if (!empty($_POST['email']))
 	{
@@ -57,7 +56,7 @@ if (!empty($_GET['verify']))
 		else
 		{
 			$msg = '<p style="color: green;">Password changed successfully, redirecting to login in 5 seconds.</p>';
-		//	header("refresh:5;url=/login.php");
+			header("refresh:5;url=/login.php");
 		}
 	}
 }
@@ -83,7 +82,7 @@ if (!empty($_GET['verify']))
 		<div class="section">
 			<div class="autogrid">
 				<div class="col-1-4 left">
-					<p>sidebar</p>
+					<p></p>
 				</div>
 				<div class="col-1-2">
 					<?php echo $msg ?>
@@ -95,7 +94,7 @@ if (!empty($_GET['verify']))
 					</div>
 				</div>
 				<div class="col-1-4 right">
-					<p>sidebar</p>
+					<p></p>
 				</div>
 				</div>
 			</div>

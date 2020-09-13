@@ -2,6 +2,11 @@
 
 session_start();
 
+if (!empty($_GET['page']))
+	$_SESSION['page'] = $_GET['page'];
+else
+	$_SESSION['page'] = 1;
+
 include ('functions.php');
 
 if (!empty($_SESSION['user']))

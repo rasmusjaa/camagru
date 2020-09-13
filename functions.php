@@ -15,9 +15,9 @@ if ($image_count)
 if ($pages == 0)
 	$pages = 1;
 $current_page = 1;
-if (!empty($_GET['page']))
+if (!empty($_SESSION['page']))
 {
-	$current_page = $_GET['page'];
+	$current_page = $_SESSION['page'];
 	$start = ($current_page - 1) * $images_per_page;
 }
 $end = $start + $images_per_page;
@@ -68,7 +68,7 @@ function reload_all_images()
 			<sup class="image_date">' . $image['date'] . '</sup>' .
 			'<img src="' . $src . '">';
 			$images = $images . '<div class="comments">';
-			$images = $images . '<div class="comment_form"><textarea name="comment_area" class="comment_field"></textarea>' .
+			$images = $images . '<div class="comment_form"><textarea name="comment_area" class="comment_field" placeholder="Add a comment..."></textarea>' .
 				'<input type="submit" value="Post" class="comment_button"></div></div>';
 			if (!empty($_SESSION['user']) && has_liked($_SESSION['id'], $image['id']) == 0)
 				$images = $images . '<div class="likes">'. '<div class="heart button redheart"></div>' . $like_count . '</div>';

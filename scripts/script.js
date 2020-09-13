@@ -10,6 +10,8 @@
 	var canvas = null;
 	var photo = null;
 	var snapbutton = null;
+	var uploadbutton = null;
+	var snap_enabled = false;
 	var newbutton = null;
 	var savebutton = null;
 	var snap_data = null;
@@ -27,6 +29,7 @@
 		canvas = document.getElementById('canvas');
 		photo = document.getElementById('photo');
 		snapbutton = document.getElementById('snapbutton');
+		uploadbutton = document.getElementById('uploadbutton');
 		newbutton = document.getElementById('newbutton');
 		savebutton = document.getElementById('savebutton');
 		sidebar = document.getElementById('sidebar');
@@ -59,17 +62,6 @@
 				  streaming = true;
 				}
 			  }, false);
-	
-			// take a photo
-			snapbutton.addEventListener('click', function(ev){
-				takepicture();
-				ev.preventDefault();
-				video.classList.add("hide");
-				photo.classList.remove("hide");
-				snapbutton.classList.add("hide");
-				newbutton.classList.remove("hide");
-				savebutton.classList.remove("hide");
-			}, false);
 			
 			// take a new photo
 			newbutton.addEventListener('click', function(ev){
@@ -77,14 +69,17 @@
 				video.classList.remove("hide");
 				newbutton.classList.add("hide");
 				savebutton.classList.add("hide");
-				snapbutton.classList.remove("hide");
+				if (snap_enabled)
+					snapbutton.classList.remove("hide");
+				uploadbutton.classList.remove("hide");
 			}, false);
 			
 			// save photo to file and database
 			savebutton.addEventListener('click', function(ev){
 				var parameters = {
 					"username" : username, 
-					"image" : snap_data
+					"image" : snap_data,
+					"overlay" : overlaid.src
 				};
 				AjaxPost("save_image.php", parameters, completedAJAX_save_image);
 			}, false);
@@ -98,25 +93,6 @@
 				snap_data = canvas.toDataURL('image/png');
 				photo.setAttribute('src', snap_data);
 			}
-			
-			// show snapped photo instead of video stream
-			function takepicture() {
-				var context = canvas.getContext('2d');
-				if (width && height) {
-					canvas.width = width;
-					canvas.height = height;
-					context.drawImage(video, 0, 0, width, height);
-					// var x = document.querySelector(".chosen");
-					// if (x)
-					// 	context.drawImage(x, 0, 0, width, height);
-					// overlaid.src = '';
-		
-					snap_data = canvas.toDataURL('image/png');
-					photo.setAttribute('src', snap_data);
-				} else {
-				  clearphoto();
-				}
-			}
 
 			clearphoto();
 			reload_user_images();
@@ -129,9 +105,15 @@
 					overlay_src = item.firstChild;
 					overlay_src.classList.add("chosen");
 					overlaid.src = overlay_src.src;
-					console.log(overlay_src);
+					if (!snap_enabled)
+					{
+						snap_enabled = true;
+						enable_snap_button();
+						document.getElementById('warning').classList.add("hide");
+					}
 				}, false)
 			})
+
 		}
 
 		// only on index.php
@@ -217,13 +199,16 @@
 		video.classList.remove("hide");
 		newbutton.classList.add("hide");
 		savebutton.classList.add("hide");
-		snapbutton.classList.remove("hide");
+		if (snap_enabled)
+			snapbutton.classList.remove("hide");
+		uploadbutton.classList.remove("hide");
 		reload_user_images();
 	}
 
 	function completedAJAX_reload_user_images(response) {
 		sidebar.innerHTML = response;
 		add_delete_button_functions();
+		enable_upload_button();
 	}
 	
 	function completedAJAX_reload_all_images(response) {
@@ -234,6 +219,8 @@
 				item.disabled = true;
 				item.placeholder = "Log in to comment";
 				item.classList.add("disabled");
+				item.nextSibling.classList.add('greyed');
+				item.parentNode.parentNode.nextSibling.classList.add('greyed');
 			})
 		}
 		else
@@ -294,6 +281,63 @@
 				reload_all_images();
 			}, false)
 		})
+	}
+
+	function enable_snap_button()
+	{
+		snapbutton.classList.remove('hide');
+		snapbutton.addEventListener('click', function(ev){
+			takepicture();
+			ev.preventDefault();
+			video.classList.add("hide");
+			photo.classList.remove("hide");
+			snapbutton.classList.add("hide");
+			uploadbutton.classList.add("hide");
+			newbutton.classList.remove("hide");
+			savebutton.classList.remove("hide");
+		}, false);
+	}
+
+	function enable_upload_button()
+	{
+		uploadbutton.classList.remove('hide');
+		uploadbutton.addEventListener('click', function(ev){
+			uploadpicture();
+			ev.preventDefault();
+			video.classList.add("hide");
+			photo.classList.remove("hide");
+			snapbutton.classList.add("hide");
+			uploadbutton.classList.add("hide");
+			newbutton.classList.remove("hide");
+			savebutton.classList.remove("hide");
+		}, false);
+	}
+
+	// show snapped photo instead of video stream
+	function takepicture() {
+		var context = canvas.getContext('2d');
+		if (width && height) {
+			canvas.width = width;
+			canvas.height = height;
+			context.drawImage(video, 0, 0, width, height);
+			snap_data = canvas.toDataURL('image/png');
+			photo.setAttribute('src', snap_data);
+		} else {
+		  clearphoto();
+		}
+	}
+
+	function uploadpicture() {
+		var context = canvas.getContext('2d');
+		if (width && height) {
+			canvas.width = width;
+			canvas.height = height;
+			context.drawImage(video, 0, 0, width, height);
+			snap_data = canvas.toDataURL('image/png');
+			photo.setAttribute('src', snap_data);
+		} else {
+		  clearphoto();
+		}
 	}
 
 	function formatDate(date) {

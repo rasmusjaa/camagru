@@ -37,14 +37,33 @@ include ('functions.php');
 						<video id="video">Video stream not available.</video>
 						<img id="overlaid">
 					</div>
-					<button id="snapbutton" class="btn red solid center">Take photo</button>
+					<p id="warning">Filter has to be selected before using webcam photos</p>
+					<button id="snapbutton" class="btn red solid center hide">Take photo</button>
+					<button id="uploadbutton" class="btn black solid center">Upload</button>
 					<button id="newbutton" class="btn black solid center hide">New photo</button>
 					<button id="savebutton" class="btn green solid center hide">Save photo</button>
 					<div id="overlays">
+						<h3>Filters</h3>
 						<div class="overlay"><img src="/overlays/clear.png"></div>
+						<div class="overlay"><img src="/overlays/balaclava.png"></div>
+						<div class="overlay"><img src="/overlays/bang.png"></div>
+						<div class="overlay"><img src="/overlays/border.png"></div>
 						<div class="overlay"><img src="/overlays/cat.png"></div>
-						<div class="overlay"><img src="/overlays/test.png"></div>
-						<div class="overlay"><img src="/overlays/test.png"></div>
+						<div class="overlay"><img src="/overlays/cells.png"></div>
+						<div class="overlay"><img src="/overlays/coffee.png"></div>
+						<div class="overlay"><img src="/overlays/colder.png"></div>
+						<div class="overlay"><img src="/overlays/colors.png"></div>
+						<div class="overlay"><img src="/overlays/cringe.png"></div>
+						<div class="overlay"><img src="/overlays/galaxy.png"></div>
+						<div class="overlay"><img src="/overlays/horns.png"></div>
+						<div class="overlay"><img src="/overlays/mandala.png"></div>
+						<div class="overlay"><img src="/overlays/mask.png"></div>
+						<div class="overlay"><img src="/overlays/pilots.png"></div>
+						<div class="overlay"><img src="/overlays/rainbow.png"></div>
+						<div class="overlay"><img src="/overlays/red.png"></div>
+						<div class="overlay"><img src="/overlays/shiny.png"></div>
+						<div class="overlay"><img src="/overlays/stars.png"></div>
+						<div class="overlay"><img src="/overlays/taco.png"></div>
 					</div>
 				</div>
 				<div class="col-1-4 right">

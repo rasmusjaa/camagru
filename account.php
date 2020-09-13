@@ -32,7 +32,7 @@ if ($_GET['status'] == 'verify')
 	elseif (!empty($_POST['email']) && !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL))
 		$msg = '<p style="color: red;">Invalid email format.</p>';
 	// validate password
-	elseif (!empty($_POST['newpassword']) && (!$uppercase || !$lowercase || !$number || strlen($_POST['password']) < 8 || strlen($_POST['password']) > 64))
+	elseif (!empty($_POST['newpassword']) && (!$uppercase || !$lowercase || !$number || strlen($_POST['newpassword']) < 8 || strlen($_POST['newpassword']) > 64))
 		$msg = '<p style="color: red;">Invalid password, include at least 1 uppercase letter, 1 lowercase letter and 1 number.</p>';
 	elseif (login_user($_POST['username'], $_POST['password']) == FALSE)
 		$msg = '<p style="color: red;">Old password incorrect.</p>';
@@ -81,7 +81,7 @@ if ($user_data)
 		<div class="section">
 			<div class="autogrid">
 				<div class="col-1-4 left">
-					<p>sidebar</p>
+					<p></p>
 				</div>
 				<div class="col-1-2">
 					<div class="form">
@@ -107,7 +107,7 @@ if ($user_data)
 					</div>
 				</div>
 				<div class="col-1-4 right">
-					<p>sidebar</p>
+					<p></p>
 				</div>
 			</div>
 		</div>

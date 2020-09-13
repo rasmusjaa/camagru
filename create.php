@@ -65,7 +65,7 @@ if ($_GET['status'] == 'verify')
 		<div class="section">
 			<div class="autogrid">
 				<div class="col-1-4 left">
-					<p>sidebar</p>
+					<p></p>
 				</div>
 				<div class="col-1-2">
 					<div class="form">
@@ -93,7 +93,7 @@ if ($_GET['status'] == 'verify')
 					</div>
 				</div>
 				<div class="col-1-4 right">
-					<p>sidebar</p>
+					<p></p>
 				</div>
 			</div>
 		</div>
