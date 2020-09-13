@@ -6,7 +6,7 @@ header("Location: /index.php");
 
 include ('functions/db_functions.php');
 
-$msg = '<p>Fill at least one field that you want to modify</p>';
+$msg = '<p>Fill at least one field that you want to modify and your old password</p>';
 
 if ($_GET['status'] == 'verify')
 {

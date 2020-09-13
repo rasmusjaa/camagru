@@ -1,8 +1,9 @@
 (function() {
 
-	var width = 1080;    // We will scale the photo width to this
-	var height = 0;     // This will be computed based on the input stream
+	var width = 1080;    // Scale the photo width to this
+	var height = 0;     // Computed based on the input stream
 	
+	// capture.php vars
 	var streaming = false;
 
 	var video = null;
@@ -11,20 +12,29 @@
 	var snapbutton = null;
 	var newbutton = null;
 	var savebutton = null;
-	var data = null;
-	var my_photos = null;
+	var snap_data = null;
+	var sidebar = null;
+	var overlaid = null;
+
+	var overlay_src = null;
+
+	// index.php vars
+	var img_feed = null;
 	
 	// when page has loaded
 	function startup() {
+		video = document.getElementById('video');
 		canvas = document.getElementById('canvas');
 		photo = document.getElementById('photo');
-		video = document.getElementById('video');
 		snapbutton = document.getElementById('snapbutton');
 		newbutton = document.getElementById('newbutton');
 		savebutton = document.getElementById('savebutton');
-		my_photos = document.getElementById('my_photos');
+		sidebar = document.getElementById('sidebar');
+		overlaid = document.getElementById('overlaid');
 
-		// only on page with video feed
+		img_feed = document.getElementById('img_feed');
+
+		// only on capture.php
 		if (video)
 		{
 			navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -70,28 +80,13 @@
 				snapbutton.classList.remove("hide");
 			}, false);
 			
-			// save photo to database and reset buttons
+			// save photo to file and database
 			savebutton.addEventListener('click', function(ev){
 				var parameters = {
 					"username" : username, 
-					"image" : data
+					"image" : snap_data
 				};
-				AjaxPost("save_image.php", parameters, completedAJAX);
-				photo.classList.add("hide");
-				video.classList.remove("hide");
-				newbutton.classList.add("hide");
-				savebutton.classList.add("hide");
-				snapbutton.classList.remove("hide");
-				// add photo to sidebar
-				var parameters = {
-					"function" : 'reload_user_images',
-					"value1" : username
-				};
-				AjaxPost("functions.php", parameters, completedAJAX);
-				// var new_div = document.createElement("div");
-				// new_div.classList.add("single_photo");
-				// new_div.innerHTML = '<img src="' + data + '"><br>';
-				// my_photos.insertBefore(new_div, my_photos.firstChild);
+				AjaxPost("save_image.php", parameters, completedAJAX_save_image);
 			}, false);
 
 			// fill photo with black
@@ -100,8 +95,8 @@
 				context.fillStyle = "#000";
 				context.fillRect(0, 0, canvas.width, canvas.height);
 		
-				data = canvas.toDataURL('image/png');
-				photo.setAttribute('src', data);
+				snap_data = canvas.toDataURL('image/png');
+				photo.setAttribute('src', snap_data);
 			}
 			
 			// show snapped photo instead of video stream
@@ -111,91 +106,45 @@
 					canvas.width = width;
 					canvas.height = height;
 					context.drawImage(video, 0, 0, width, height);
+					// var x = document.querySelector(".chosen");
+					// if (x)
+					// 	context.drawImage(x, 0, 0, width, height);
+					// overlaid.src = '';
 		
-					data = canvas.toDataURL('image/png');
-					photo.setAttribute('src', data);
+					snap_data = canvas.toDataURL('image/png');
+					photo.setAttribute('src', snap_data);
 				} else {
 				  clearphoto();
 				}
 			}
 
 			clearphoto();
-		}
+			reload_user_images();
 
-		// Add like button functions
-		document.querySelectorAll('.heart').forEach(item => {
-			item.addEventListener('click', function(ev) {
-				if (!user_id)
-					return ;
-				var like_count = item.nextElementSibling;
-				item.classList.toggle('redheart');
-				if (item.classList.contains('redheart'))
-					like_count.innerHTML = parseInt(like_count.innerHTML, 10) + 1;
-				else
-					like_count.innerHTML = parseInt(like_count.innerHTML, 10) - 1;
-				var parameters = {
-					"user_id" : user_id, 
-					"image" : item.parentNode.parentNode.id
-				};
-				AjaxPost("like.php", parameters, completedAJAX);
-			}, false)
-		})
-
-		// Add comment button functions
-		document.querySelectorAll('.comment_button').forEach(item => {
-			item.addEventListener('click', function(ev) {
-				if (!user_id)
-					return ;
-				var parameters = {
-					"user_id" : user_id, 
-					"image" : item.parentNode.parentNode.parentNode.id,
-					"comment" : item.previousSibling.value
-				};
-				AjaxPost("comment.php", parameters, completedAJAX);
-				// Add comment before previous
-				var comment_form = item.parentNode.parentNode.nextElementSibling.nextElementSibling;
-				var new_comment = document.createElement("p");
-				new_comment.classList.add("comment");
-				var new_span = document.createElement("span");
-				new_span.classList.add("comment_user");
-				new_span.innerHTML = username;
-				new_comment.appendChild(new_span);
-				new_span = document.createElement("span");
-				new_span.classList.add("comment_date");
-				new_span.innerHTML = formatDate(Date.now());
-				new_comment.appendChild(new_span);
-				new_span = document.createElement("span");
-				new_span.classList.add("comment_text");
-				new_span.innerHTML = item.previousSibling.value;
-				new_comment.appendChild(new_span);
-				comment_form.insertBefore(new_comment, comment_form.firstChild);
-				item.previousSibling.value = '';
-			}, false)
-		})
-
-		// Add delete button functions
-		document.querySelectorAll('.delete_image').forEach(item => {
-			item.addEventListener('click', function(ev) {
-				if (confirm("Delete this image?") == false)
-					return ;
-				var parameters = {
-					"image" : item.parentNode.id
-				};
-				AjaxPost("delete_image.php", parameters, completedAJAX);
-				item.parentNode.style.display = 'none';
-			}, false)
-		})
-		
-		if (typeof user_id !== 'undefined')
-		{
-			document.querySelectorAll('.comment_field').forEach(item => {
-				item.disabled = true;
-				item.classList.add("disabled");
-				item.placeholder = "Log in to comment";
+			document.querySelectorAll('.overlay').forEach(item => {
+				item.addEventListener('click', function(ev) {
+					var x = document.querySelector(".chosen");
+					if (x)
+						x.classList.remove("chosen");
+					overlay_src = item.firstChild;
+					overlay_src.classList.add("chosen");
+					overlaid.src = overlay_src.src;
+					console.log(overlay_src);
+				}, false)
 			})
 		}
-		
+
+		// only on index.php
+		if (img_feed)
+		{
+			reload_all_images();
+		}
+
 	}
+
+	/*				*/
+	/*	AJAX		*/
+	/*				*/
 
 	function createAjaxRequestObject() {
 		var xmlhttp;
@@ -235,6 +184,27 @@
 		http3.send(parameterString);
 	}
 
+	/*				*/
+	/*	FUNCTIONS	*/
+	/*				*/
+
+	function reload_user_images()
+	{
+		var parameters = {
+			"function" : 'reload_user_images',
+			"value1" : username
+		};
+		AjaxPost("functions.php", parameters, completedAJAX_reload_user_images);
+	}
+
+	function reload_all_images()
+	{
+		var parameters = {
+			"function" : 'reload_all_images'
+		};
+		AjaxPost("functions.php", parameters, completedAJAX_reload_all_images);
+	}
+
 	function completedAJAX(response) {
 		if (response)
 			alert(response);
@@ -243,6 +213,87 @@
 	function completedAJAX_save_image(response) {
 		if (response)
 			alert(response);
+		photo.classList.add("hide");
+		video.classList.remove("hide");
+		newbutton.classList.add("hide");
+		savebutton.classList.add("hide");
+		snapbutton.classList.remove("hide");
+		reload_user_images();
+	}
+
+	function completedAJAX_reload_user_images(response) {
+		sidebar.innerHTML = response;
+		add_delete_button_functions();
+	}
+	
+	function completedAJAX_reload_all_images(response) {
+		img_feed.innerHTML = response;
+		if (typeof user_id == 'undefined' || !user_id)
+		{
+			document.querySelectorAll('.comment_field').forEach(item => {
+				item.disabled = true;
+				item.placeholder = "Log in to comment";
+				item.classList.add("disabled");
+			})
+		}
+		else
+		{
+			add_like_button_functions();
+			add_comment_button_functions();
+		}
+	}
+
+	function add_delete_button_functions()
+	{
+		document.querySelectorAll('.delete_image').forEach(item => {
+			item.addEventListener('click', function(ev) {
+				if (confirm("Delete this image?") == false)
+					return ;
+				var parameters = {
+					"image" : item.parentNode.id
+				};
+				AjaxPost("delete_image.php", parameters, completedAJAX);
+				item.parentNode.style.display = 'none';
+			}, false)
+		})
+	}
+
+	function add_like_button_functions()
+	{
+		document.querySelectorAll('.heart').forEach(item => {
+			item.addEventListener('click', function(ev) {
+				if (!user_id)
+					return ;
+				var like_count = item.nextElementSibling;
+				item.classList.toggle('redheart');
+				if (item.classList.contains('redheart'))
+					like_count.innerHTML = parseInt(like_count.innerHTML, 10) + 1;
+				else
+					like_count.innerHTML = parseInt(like_count.innerHTML, 10) - 1;
+				var parameters = {
+					"user_id" : user_id, 
+					"image" : item.parentNode.parentNode.id
+				};
+				AjaxPost("like.php", parameters, completedAJAX);
+			}, false)
+		})
+	}
+
+	function add_comment_button_functions()
+	{
+		document.querySelectorAll('.comment_button').forEach(item => {
+			item.addEventListener('click', function(ev) {
+				if (!user_id)
+					return ;
+				var parameters = {
+					"user_id" : user_id, 
+					"image" : item.parentNode.parentNode.parentNode.id,
+					"comment" : item.previousSibling.value
+				};
+				AjaxPost("comment.php", parameters, completedAJAX);
+				reload_all_images();
+			}, false)
+		})
 	}
 
 	function formatDate(date) {
@@ -270,5 +321,6 @@
 		return (formated);
 	}
 
+	// After window has loaded
 	window.addEventListener('load', startup, false);
 })();

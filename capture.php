@@ -1,13 +1,10 @@
 <?php
 
-include ('functions.php');
-
 session_start();
 if (empty($_SESSION['user']))
 	header("Location: /index.php");
 
-$images = reload_user_images($_SESSION['user']);
-
+include ('functions.php');
 
 ?>
 
@@ -38,14 +35,22 @@ $images = reload_user_images($_SESSION['user']);
 						<canvas id="canvas" class="hide"></canvas>
 						<img id="photo" class="hide" alt="Snapped photo">
 						<video id="video">Video stream not available.</video>
+						<img id="overlaid">
 					</div>
 					<button id="snapbutton" class="btn red solid center">Take photo</button>
-					<button id="newbutton" class="btn white solid center hide">New photo</button>
+					<button id="newbutton" class="btn black solid center hide">New photo</button>
 					<button id="savebutton" class="btn green solid center hide">Save photo</button>
+					<div id="overlays">
+						<div class="overlay"><img src="/overlays/clear.png"></div>
+						<div class="overlay"><img src="/overlays/cat.png"></div>
+						<div class="overlay"><img src="/overlays/test.png"></div>
+						<div class="overlay"><img src="/overlays/test.png"></div>
+					</div>
 				</div>
 				<div class="col-1-4 right">
 					<h3>My photos</h3>
-					<?php echo $images ?>
+					<div id="sidebar">
+					</div>
 				</div>
 			</div>
 		</div>
