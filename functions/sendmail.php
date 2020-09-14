@@ -90,4 +90,45 @@ function reset_user_mail($user, $email, $key)
 	}
 }
 
+function new_comment_mail($user, $email, $comment)
+{
+	global $host;
+	global $port;
+	global $username;
+	global $password;
+	global $from;
+
+	$to = $email;
+	$subject = "New comment on your Camagru photo";
+	$url = "http://localhost:8080/";
+	$body = '
+	<!doctype html>
+	<html>
+	<body>
+		<h3>Hello ' . $user . '!</h3>
+		<p>Your image has new comment: "' . $comment . '", see it on
+		<a href="' . $url . '">' . $url . '</a>.</p>
+	</body>
+	</html>
+		';
+
+	$headers = array ('Content-Type' => "text/html; charset=ISO-8859-1rn", 'From' => $from, 'To' => $to,'Subject' => $subject);
+	$smtp = Mail::factory('smtp',
+	array ('host' => $host,
+		'port' => $port,
+		'auth' => true,
+		'username' => $username,
+		'password' => $password));
+
+	$mail = $smtp->send($to, $headers, $body);
+
+	if (PEAR::isError($mail)) {
+	//	echo($mail->getMessage());
+		return FALSE;
+	} else {
+	//	echo("Message successfully sent!\n");
+		return TRUE;
+	}
+}
+
 ?>

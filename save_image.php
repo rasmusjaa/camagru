@@ -5,7 +5,6 @@ include (__DIR__ . '/functions/db_functions.php');
 	$img = $_POST['image'];
 	$username = $_POST['username'];
 	$overlay = $_POST['overlay'];
-	
 	if (empty($img))
 		echo "no image to save";
 	elseif (empty($username))

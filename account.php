@@ -18,10 +18,8 @@ if ($_GET['status'] == 'verify')
 	}
 
 	// validate username
-	if ((empty($_POST['username']) && empty($_POST['email']) && empty($_POST['newpassword'])) || empty($_SESSION['user']))
-		$msg = '<p style="color: red;">Nothing to modify.</p>';
-	elseif (empty($_POST['oldpassword']))
-		$msg = '<p style="color: red;">Need old password to confirm changes.</p>';
+	if (empty($_POST['oldpassword']))
+		$msg = '<p style="color: red;">Need current password to confirm changes.</p>';
 	elseif (!empty($_POST['username']) && strlen($_POST['username']) < 4)
 		$msg = '<p style="color: red;">Username too short.</p>';
 	elseif (!empty($_POST['username']) && strlen($_POST['username']) > 24)
@@ -35,20 +33,25 @@ if ($_GET['status'] == 'verify')
 	elseif (!empty($_POST['newpassword']) && (!$uppercase || !$lowercase || !$number || strlen($_POST['newpassword']) < 8 || strlen($_POST['newpassword']) > 64))
 		$msg = '<p style="color: red;">Invalid password, include at least 1 uppercase letter, 1 lowercase letter and 1 number.</p>';
 	elseif (login_user($_POST['username'], $_POST['password']) == FALSE)
-		$msg = '<p style="color: red;">Old password incorrect.</p>';
+		$msg = '<p style="color: red;">Current password incorrect.</p>';
 	else
 	{
-		$ret = modify_user($_SESSION['user'], $_POST['email'], $_POST['username'], $_POST['newpassword'], $_POST['oldpassword']);
+		$ret = modify_user($_SESSION['user'], $_POST['email'], $_POST['username'], $_POST['newpassword'], $_POST['notifications'], $_POST['oldpassword']);
 		if ($ret == 0)
 		{
-			$msg = '<p style="color: green;">Account modified successfully.</p>';
-			$_SESSION['user'] = $_POST['username'];
+			if (!empty($_POST['username']))
+				$_SESSION['user'] = $_POST['username'];
+			header("Location: account.php?status=done");
 		}
 		if ($ret == 1)
-			$msg = '<p style="color: red;">Incorrect password</p>';
+		$msg = '<p style="color: red;">Incorrect password</p>';
 		if ($ret == 2)
-			$msg = '<p style="color: red;">Username or email already already in use, try again.</p>';
+		$msg = '<p style="color: red;">Username or email already already in use, try again.</p>';
 	}
+}
+if ($_GET['status'] == 'done')
+{
+	$msg = '<p style="color: green;">Account modified successfully.</p>';
 }
 
 $cur_login = 'no data';
@@ -58,6 +61,16 @@ if ($user_data)
 {
 	$cur_login = $user_data['login'];
 	$cur_email = $user_data['email'];
+	if ($user_data['status'] == 1)
+	{
+		$checked = 'checked';
+		$cur_comments = 'On';
+	}
+	else
+	{
+		$checked = '';
+		$cur_comments = 'Off';
+	}
 }
 
 ?>
@@ -87,17 +100,20 @@ if ($user_data)
 					<div class="form">
 						<h3 class="center">Modify account</h3>
 						<div class="box bg-white no-first-last">
-							<p>Current username: <?php echo $cur_login ?><br>Current email: <?php echo $cur_email ?></p>
+							<p>Current username: <?php echo $cur_login ?><br>Current email: <?php echo $cur_email ?>
+								<br>Email notifications from new comments: <?php echo $cur_comments ?></p>
 							<?php echo $msg ?>
 							<form action="account.php?status=verify" method="post">
 								<p>
-									<input placeholder="New Email" type="email" name="email">
+									<input placeholder="New Email" type="email" name="email"><br>
 									<label><small>Username must be 4-24 characters</small></label>
-									<input placeholder="New Username" type="text" name="username">
+									<input placeholder="New Username" type="text" name="username"><br>
 									<label><small>New password must be 8-64 characters</small></label>
-									<input placeholder="New Password" type="password" name="newpassword">
-									<label><small>Old password to confirm changes</small></label>
-									<input placeholder="Old Password" type="password" name="oldpassword">
+									<input placeholder="New Password" type="password" name="newpassword"><br>
+									<label><small>Email notifications </small></label>
+									<input type="checkbox" name="notifications" <?php echo $checked ?> value="yes"><br><br>
+									<label><small>Current password to confirm changes</small></label>
+									<input placeholder="Current Password" type="password" name="oldpassword">
 								</p>
 								<p>
 								<input type="submit" value="Modify" class="btn red solid">

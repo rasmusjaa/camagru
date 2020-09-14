@@ -29,7 +29,7 @@ function delete_user($user)
 	$pdo = null;
 }
 
-function modify_user($user, $email, $login, $newpassword, $oldpassword)
+function modify_user($user, $email, $login, $newpassword, $notifications, $oldpassword)
 {
 	include (__DIR__ . '/../config/database.php');
 	try
@@ -77,6 +77,21 @@ function modify_user($user, $email, $login, $newpassword, $oldpassword)
 				"UPDATE users SET pass = ? WHERE login = ?"
 			);
 			$stmt->execute([$hashed_pw, $user]);
+		}
+
+		if (isset($notifications) && $notifications = 'yes')
+		{
+			$stmt = $pdo->prepare(
+				"UPDATE users SET status = 1 WHERE login = ?"
+			);
+			$stmt->execute([$user]);
+		}
+		else
+		{
+			$stmt = $pdo->prepare(
+				"UPDATE users SET status = 2 WHERE login = ?"
+			);
+			$stmt->execute([$user]);
 		}
 
 		return (0);
