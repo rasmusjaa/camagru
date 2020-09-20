@@ -40,8 +40,7 @@ function startup() {
 	img_feed = document.getElementById('img_feed');
 
 	// only on capture.php
-	if (video)
-	{
+	if (video) {
 		navigator.mediaDevices.getUserMedia({ video: true, audio: false })
 		.then(function(stream) {
 			video.srcObject = stream;
@@ -54,9 +53,8 @@ function startup() {
 			if (!streaming) {
 				height = video.videoHeight / (video.videoWidth/width);
 				if (isNaN(height)) {
-				height = width / (4/3);
+					height = width / (4/3);
 				}
-
 				video.setAttribute('width', width);
 				video.setAttribute('height', height);
 				canvas.setAttribute('width', width);
@@ -75,7 +73,8 @@ function startup() {
 			var parameters = {
 				"username" : username, 
 				"image" : snap_data,
-				"overlay" : overlaid.src
+				"overlay" : overlaid.src,
+				"token" : token
 			};
 			AjaxPost("save_image.php", parameters, completedAJAX_save_image);
 		}, false);
@@ -85,7 +84,6 @@ function startup() {
 			var context = canvas.getContext('2d');
 			context.fillStyle = "#000";
 			context.fillRect(0, 0, canvas.width, canvas.height);
-	
 			snap_data = canvas.toDataURL('image/png');
 			photo.setAttribute('src', snap_data);
 		}
@@ -113,8 +111,7 @@ function startup() {
 	}
 
 	// only on index.php
-	if (img_feed)
-	{
+	if (img_feed) {
 		reload_all_images();
 	}
 
@@ -131,7 +128,6 @@ function createAjaxRequestObject() {
 	} else { // code for IE6, IE5
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	// Create the object
 	return xmlhttp;
 }
 
@@ -152,7 +148,7 @@ function AjaxPost(ajaxURL, parameters, onComplete) {
 	for(var index in parameters) {
 		if(!isFirst) {
 			parameterString += "&";
-		} 
+		}
 		parameterString += encodeURIComponent(index) + "=" + encodeURIComponent(parameters[index]);
 		isFirst = false;
 	}
@@ -198,7 +194,6 @@ function completedAJAX_save_image(response) {
 function completedAJAX_reload_user_images(response) {
 	sidebar.innerHTML = response;
 	add_delete_button_functions();
-//	enable_upload_button();
 }
 
 function completedAJAX_reload_all_images(response) {
@@ -227,7 +222,8 @@ function add_delete_button_functions()
 			if (confirm("Delete this image?") == false)
 				return ;
 			var parameters = {
-				"image" : item.parentNode.id
+				"image" : item.parentNode.id,
+				"token" : token
 			};
 			AjaxPost("delete_image.php", parameters, completedAJAX);
 			item.parentNode.style.display = 'none';
@@ -249,7 +245,8 @@ function add_like_button_functions()
 				like_count.innerHTML = parseInt(like_count.innerHTML, 10) - 1;
 			var parameters = {
 				"user_id" : user_id, 
-				"image" : item.parentNode.parentNode.id
+				"image" : item.parentNode.parentNode.id,
+				"token" : token
 			};
 			AjaxPost("like.php", parameters, completedAJAX);
 		}, false)
@@ -266,7 +263,8 @@ function add_comment_button_functions()
 				"user_id" : user_id, 
 				"image" : item.parentNode.parentNode.parentNode.id,
 				"comment" : item.previousSibling.value,
-				"image_owner" : item.parentNode.parentNode.parentNode.firstChild.innerHTML.substring(1)
+				"image_owner" : item.parentNode.parentNode.parentNode.firstChild.innerHTML.substring(1),
+				"token" : token
 			};
 			AjaxPost("comment.php", parameters, completedAJAX);
 			reload_all_images();
@@ -307,7 +305,6 @@ function uploadpicture(event) {
 			canvas.height = height;
 			context.drawImage(photo, 0, 0, width, height);
 			snap_data = canvas.toDataURL('image/png');
-			console.log(photo);
 		} else {
 			clearphoto();
 		}

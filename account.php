@@ -2,14 +2,18 @@
 
 session_start();
 if (empty($_SESSION['user']))
-header("Location: /index.php");
+	header("Location: /index.php");
 
 include ('functions/db_functions.php');
 
 $msg = '<p>Fill at least one field that you want to modify and your old password</p>';
 
-if ($_GET['status'] == 'verify')
+if ($_GET['status'] != 'verify')
 {
+	//Generate a secure token using openssl_random_pseudo_bytes.
+	$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
+}
+else {
 	if (!empty($_POST['newpassword']))
 	{
 		$uppercase = preg_match('@[A-Z]@', $_POST['newpassword']);
@@ -17,8 +21,19 @@ if ($_GET['status'] == 'verify')
 		$number    = preg_match('@[0-9]@', $_POST['newpassword']);
 	}
 
+	//Make sure that the token POST variable exists.
+	if(!isset($_POST['token'])){
+		$msg = '<p style="color: red;">Error, modifying account only allowed from this page.</p>';
+		$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
+	}
+	//It exists, so compare the token we received against the 
+	//token that we have stored as a session variable.
+	elseif(hash_equals($_POST['token'], $_SESSION['token']) === false){
+		$msg = '<p style="color: red;">Error, modifying account only allowed by filling this form.</p>';
+		$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
+	}
 	// validate username
-	if (empty($_POST['oldpassword']))
+	elseif (empty($_POST['oldpassword']))
 		$msg = '<p style="color: red;">Need current password to confirm changes.</p>';
 	elseif (!empty($_POST['username']) && strlen($_POST['username']) < 4)
 		$msg = '<p style="color: red;">Username too short.</p>';
@@ -44,9 +59,11 @@ if ($_GET['status'] == 'verify')
 			header("Location: account.php?status=done");
 		}
 		if ($ret == 1)
-		$msg = '<p style="color: red;">Incorrect password</p>';
+			$msg = '<p style="color: red;">Incorrect password</p>';
 		if ($ret == 2)
-		$msg = '<p style="color: red;">Username or email already already in use, try again.</p>';
+			$msg = '<p style="color: red;">Username or email already already in use, try again.</p>';
+		if ($ret == 3)
+			$msg = '<p style="color: red;">Something went wrong, try again.</p>';
 	}
 }
 if ($_GET['status'] == 'done')
@@ -114,6 +131,8 @@ if ($user_data)
 									<input type="checkbox" name="notifications" <?php echo $checked ?> value="yes"><br><br>
 									<label><small>Current password to confirm changes</small></label>
 									<input placeholder="Current Password" type="password" name="oldpassword">
+									<!--Hidden field containing our session token-->
+    								<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
 								</p>
 								<p>
 								<input type="submit" value="Modify" class="btn red solid">

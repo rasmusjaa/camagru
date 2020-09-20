@@ -99,7 +99,7 @@ function modify_user($user, $email, $login, $newpassword, $notifications, $oldpa
 	catch(PDOException $e)
 	{
 	//	echo $e->getMessage() . PHP_EOL;
-		return (FALSE);
+		return (3);
 	}
 	$pdo = null;
 }
@@ -484,7 +484,14 @@ function reset_pass($newpassword, $code)
 			$hashed_pw = password_hash($newpassword, PASSWORD_BCRYPT);
 			
 			if (strtotime($line['expDate']) - time() < 0)
+			{
+				// delete expired code
+				$stmt = $pdo->prepare(
+					"DELETE FROM password_reset_temp WHERE code = ?"
+				);
+				$stmt->execute([$code]);
 				return FALSE;
+			}
 			$stmt = $pdo->prepare(
 				"UPDATE users SET pass = ? WHERE email = ?"
 			);
@@ -509,7 +516,7 @@ function reset_pass($newpassword, $code)
 	$pdo = null;
 }
 
-function create_reset_key($email)
+function create_reset_key($email) // this or some cron job could also query and delete expired codes
 {
 	include (__DIR__ . '/../config/database.php');
 	try

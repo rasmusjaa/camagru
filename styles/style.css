@@ -165,6 +165,10 @@ img {
 	background-color: #1a1a1d;
 }
 
+#footer a{
+	text-decoration: underline;
+}
+
 /* Texts */
 
 .light-text .bg-white * {

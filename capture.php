@@ -4,6 +4,7 @@ session_start();
 if (empty($_SESSION['user']))
 	header("Location: /index.php");
 
+$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
 include ('functions.php');
 
 ?>
@@ -13,7 +14,7 @@ include ('functions.php');
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-	<script type="text/javascript">var username='<?php echo $_SESSION['user'];?>';</script>
+	<script type="text/javascript">var username='<?php echo $_SESSION['user'];?>'; var token='<?php echo $_SESSION['token'];?>';</script>
 	<script type="text/javascript" src="scripts/script.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/vital.css"/>
 	<link rel="stylesheet" type="text/css" href="styles/style.css"/>
@@ -40,7 +41,7 @@ include ('functions.php');
 					<p id="warning">Filter has to be selected before using webcam photos</p>
 					<button id="snapbutton" class="btn red solid center hide">Take photo</button>
 					<p id="uploadtext">Or upload image (will be resized to 4:3 aspepct ratio):</p>
-					<input type="file" accept="image/png" id="uploadbutton" name="image" onchange="uploadpicture(event)" class="center">
+					<input type="file" accept="image/*" id="uploadbutton" name="image" onchange="uploadpicture(event)" class="center">
 					<button id="newbutton" class="btn black solid center hide">New photo</button>
 					<button id="savebutton" class="btn green solid center hide">Save photo</button>
 					<div id="overlays">

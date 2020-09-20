@@ -4,7 +4,7 @@
 	if (!empty($_SESSION['user']))
 	{
 		$menu = '
-		<li><a href="/logout.php">Log Out</a></li>
+		<li><a href="/logout.php?session=' . $_SESSION['token'] . '">Log Out</a></li>
 		<li><a href="/account.php">My Account</a></li>
 		<li><a href="/capture.php">My Photos</a></li>
 		';

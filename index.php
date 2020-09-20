@@ -10,7 +10,10 @@ else
 include ('functions.php');
 
 if (!empty($_SESSION['user']))
+{
+	$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
 	$msg = '<h2>Hi ' . $_SESSION['user'] . '</h2>';
+}
 
 // Pages
 if ($image_count > 0)
@@ -41,7 +44,7 @@ else
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-	<script type="text/javascript">var username='<?php echo $_SESSION['user'];?>'; var user_id='<?php echo $_SESSION['id'];?>';</script>
+	<script type="text/javascript">var username='<?php echo $_SESSION['user'];?>'; var user_id='<?php echo $_SESSION['id'];?>'; var token='<?php echo $_SESSION['token'];?>';</script>
 	<script type="text/javascript" src="scripts/script.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/vital.css"/>
 	<link rel="stylesheet" type="text/css" href="styles/style.css"/>
