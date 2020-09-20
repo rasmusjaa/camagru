@@ -1,5 +1,7 @@
 <?php
 require_once "Mail.php";
+// used for bonus, I could use mail($to, $subject, $message, $headers);
+// but that mostly goes to spam, so using this I can set my own mail as SMTP server and pass spam filters
 
 $host = "ssl://smtp.gmail.com";
 $port = "465";

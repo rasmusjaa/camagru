@@ -16,7 +16,7 @@ include (__DIR__ . '/functions/db_functions.php');
 
 	$user_id = $_POST['user_id'];
 	$img = $_POST['image'];
-	$comment = $_POST['comment'];
+	$comment = htmlentities($_POST['comment']);
 	$owner = $_POST['image_owner'];
 	
 	if (empty($img))
