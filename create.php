@@ -17,21 +17,15 @@ if ($_GET['status'] == 'verify')
 	// validate username
 	if (empty($_POST['username']))
 		$msg = '<p style="color: red;">Missing username.</p>';
-	elseif (strlen($_POST['username']) < 4)
-		$msg = '<p style="color: red;">Username too short.</p>';
-	elseif (strlen($_POST['username']) > 24)
-		$msg = '<p style="color: red;">Username too long.</p>';
 	// validate mail
 	elseif (empty($_POST['email']))
 		$msg = '<p style="color: red;">Missing email.</p>';
-	elseif (strlen($_POST['email']) > 256)
-		$msg = '<p style="color: red;">Email too long.</p>';
 	elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL))
 		$msg = '<p style="color: red;">Invalid email format.</p>';
 	// validate password
 	elseif (empty($_POST['password']))
 		$msg = '<p style="color: red;">Missing password</p>';
-	elseif (!$uppercase || !$lowercase || !$number || strlen($_POST['password']) < 8 || strlen($_POST['password']) > 64)
+	elseif (!$uppercase || !$lowercase || !$number)
 		$msg = '<p style="color: red;">Invalid password, include at least 1 uppercase letter, 1 lowercase letter and 1 number.</p>';
 	else
 	{
@@ -74,11 +68,11 @@ if ($_GET['status'] == 'verify')
 							<?php echo $msg ?>
 							<form action="create.php?status=verify" method="post">
 								<p>
-									<input placeholder="Email" type="email" name="email">
+									<input placeholder="Email" maxlength="256" type="email" name="email">
 									<label><small>Username must be 4-24 characters</small></label>
-									<input placeholder="Username" type="text" name="username">
+									<input placeholder="Username" minlength="4" maxlength="24" type="text" name="username">
 									<label><small>Password must be 8-64 characters</small></label>
-									<input placeholder="Password" type="password" name="password">
+									<input placeholder="Password" minlength="8" maxlength="64" type="password" name="password">
 								</p>
 								<p>
 									<input type="submit" value="Create" class="btn red solid">

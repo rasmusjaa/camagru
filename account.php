@@ -29,17 +29,11 @@ if ($_GET['status'] == 'verify')
 	// validate username
 	elseif (empty($_POST['oldpassword']))
 		$msg = '<p style="color: red;">Need current password to confirm changes.</p>';
-	elseif (!empty($_POST['username']) && strlen($_POST['username']) < 4)
-		$msg = '<p style="color: red;">Username too short.</p>';
-	elseif (!empty($_POST['username']) && strlen($_POST['username']) > 24)
-		$msg = '<p style="color: red;">Username too long.</p>';
 	// validate mail
-	elseif (!empty($_POST['email']) && strlen($_POST['email']) > 256)
-		$msg = '<p style="color: red;">Email too long.</p>';
 	elseif (!empty($_POST['email']) && !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL))
 		$msg = '<p style="color: red;">Invalid email format.</p>';
 	// validate password
-	elseif (!empty($_POST['newpassword']) && (!$uppercase || !$lowercase || !$number || strlen($_POST['newpassword']) < 8 || strlen($_POST['newpassword']) > 64))
+	elseif (!empty($_POST['newpassword']) && (!$uppercase || !$lowercase || !$number))
 		$msg = '<p style="color: red;">Invalid password, include at least 1 uppercase letter, 1 lowercase letter and 1 number.</p>';
 	elseif (login_user($_POST['username'], $_POST['password']) == FALSE)
 		$msg = '<p style="color: red;">Current password incorrect.</p>';
@@ -116,11 +110,11 @@ if ($user_data)
 							<?php echo $msg ?>
 							<form action="account.php?status=verify" method="post">
 								<p>
-									<input placeholder="New Email" type="email" name="email"><br>
+									<input placeholder="New Email" maxlength="256" type="email" name="email"><br>
 									<label><small>Username must be 4-24 characters</small></label>
-									<input placeholder="New Username" type="text" name="username"><br>
+									<input placeholder="New Username" minlength="4" maxlength="24" type="text" name="username"><br>
 									<label><small>New password must be 8-64 characters</small></label>
-									<input placeholder="New Password" type="password" name="newpassword"><br>
+									<input placeholder="New Password" minlength="8" maxlength="64" type="password" name="newpassword"><br>
 									<label><small>Email notifications </small></label>
 									<input type="checkbox" name="notifications" <?php echo $checked ?> value="yes"><br><br>
 									<label><small>Current password to confirm changes</small></label>
