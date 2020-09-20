@@ -11,7 +11,6 @@ include ('functions.php');
 
 if (!empty($_SESSION['user']))
 {
-	$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
 	$msg = '<h2>Hi ' . $_SESSION['user'] . '</h2>';
 }
 

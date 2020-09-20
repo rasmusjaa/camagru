@@ -1,7 +1,7 @@
 <?php
 
 	session_start();
-	if(!isset($_GET['session'])){
+	if(!isset($_GET['session']) || !isset($_GET['token'])){
 		echo 'Logging out only allowed for logged in users from menu bar.';
 	}
 	//It exists, so compare the token we received against the 

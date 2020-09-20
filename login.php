@@ -28,6 +28,8 @@ if (!empty($_GET['action']))
 		{
 			$_SESSION['user'] = $_POST['username'];
 			$_SESSION['id'] = $ret;
+			//Generate a secure token using openssl_random_pseudo_bytes.
+			$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
 			header("Location: /index.php");
 		}
 	}

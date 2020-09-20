@@ -8,12 +8,8 @@ include ('functions/db_functions.php');
 
 $msg = '<p>Fill at least one field that you want to modify and your old password</p>';
 
-if ($_GET['status'] != 'verify')
+if ($_GET['status'] == 'verify')
 {
-	//Generate a secure token using openssl_random_pseudo_bytes.
-	$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
-}
-else {
 	if (!empty($_POST['newpassword']))
 	{
 		$uppercase = preg_match('@[A-Z]@', $_POST['newpassword']);
@@ -24,13 +20,11 @@ else {
 	//Make sure that the token POST variable exists.
 	if(!isset($_POST['token'])){
 		$msg = '<p style="color: red;">Error, modifying account only allowed from this page.</p>';
-		$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
 	}
 	//It exists, so compare the token we received against the 
 	//token that we have stored as a session variable.
 	elseif(hash_equals($_POST['token'], $_SESSION['token']) === false){
 		$msg = '<p style="color: red;">Error, modifying account only allowed by filling this form.</p>';
-		$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
 	}
 	// validate username
 	elseif (empty($_POST['oldpassword']))

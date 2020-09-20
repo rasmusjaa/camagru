@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-	if (empty($_POST['token']))
+	if (empty($_POST['token']) || empty($_SESSION['token']))
 	{
 		echo 'Action denied, only allowed to do that from this page';
 		return ;

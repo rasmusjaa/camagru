@@ -4,7 +4,6 @@ session_start();
 if (empty($_SESSION['user']))
 	header("Location: /login.php");
 
-$_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(24));
 include ('functions.php');
 
 ?>
