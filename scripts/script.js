@@ -17,6 +17,7 @@ var savebutton = null;
 var snap_data = null;
 var sidebar = null;
 var overlaid = null;
+var uploaded = false;
 
 var overlay_src = null;
 
@@ -274,7 +275,8 @@ function add_comment_button_functions()
 
 function enable_snap_button()
 {
-	snapbutton.classList.remove('hide');
+	if (!uploaded)
+		snapbutton.classList.remove('hide');
 	snapbutton.addEventListener('click', function(ev){
 		takepicture();
 		ev.preventDefault();
@@ -299,6 +301,7 @@ function takepicture() {
 function uploadpicture(event) {
 	photo.src = URL.createObjectURL(event.target.files[0]);
 	photo.onload = function () {
+		uploaded = true;
 		var context = canvas.getContext('2d');
 		if (width && height) {
 			canvas.width = width;
@@ -338,6 +341,7 @@ function formatDate(date) {
 }
 
 function first_step_mode() {
+	uploaded = false;
 	photo.classList.add("hide");
 	video.classList.remove("hide");
 	newbutton.classList.add("hide");
