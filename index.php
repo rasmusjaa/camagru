@@ -1,6 +1,6 @@
 <?php
-
-session_start();
+if (!isset($_SESSION))
+	session_start();
 
 if (!empty($_GET['page']))
 	$_SESSION['page'] = $_GET['page'];

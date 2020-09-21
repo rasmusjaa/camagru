@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-	if (empty($_POST['token']) || empty($_SESSION['token']))
+	if (empty($_POST['token']) || !isset($_SESSION['token']))
 	{
 		echo 'Action denied, only allowed to do that from this page';
 		return ;
@@ -27,22 +27,29 @@ include (__DIR__ . '/functions/db_functions.php');
 		}
 		$img = str_replace('data:image/png;base64,', '', $img);
 		$img = str_replace(' ', '+', $img);
-		$data = base64_decode($img);
 		$filename = uniqid($username . '_');
 		$file = 'user_images/' . $filename . '.png';
-		if (file_put_contents($file, $data))
+		if (file_put_contents($file, base64_decode($img)))
 		{
 			// Add overlay
 			if (!empty($overlay))
 			{
-				$dest = imagecreatefrompng($file);
-				$sub = 'overlays/' . substr($overlay, strrpos($overlay, '/') + 1);
-				$src = imagecreatefrompng($sub);
-				imagecopyresampled($dest, $src, 0, 0, 0, 0, 1080, 810, 1080, 810);
-				header('Content-Type: image/png');
-				imagepng($dest, $file);
-				imagedestroy($dest);
-				imagedestroy($src);
+				$overlay = str_replace('data:image/png;base64,', '', $overlay);
+				$overlay = str_replace(' ', '+', $overlay);
+				$temp_file = 'temp_overlay.png';
+				if (file_put_contents($temp_file, base64_decode($overlay)))
+				{
+					$dest = imagecreatefrompng($file);
+					$src = imagecreatefrompng($temp_file);
+					imagecopyresampled($dest, $src, 0, 0, 0, 0, 1080, 810, 1080, 810);
+					header('Content-Type: image/png');
+					imagepng($dest, $file);
+					imagedestroy($dest);
+					imagedestroy($src);
+					unlink($temp_file);
+				}
+				else
+					echo 'Could not add overlay';
 			}
 			if (add_image($username, $filename) != 0)
 				echo 'Could not save photo to user account';

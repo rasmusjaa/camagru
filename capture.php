@@ -1,6 +1,6 @@
 <?php
-
-session_start();
+if (!isset($_SESSION))
+	session_start();
 if (empty($_SESSION['user']))
 	header("Location: /login.php");
 
@@ -33,6 +33,7 @@ include ('functions.php');
 					<div id="photo_area">
 						<div id="dummy"></div>
 						<canvas id="canvas" class="hide"></canvas>
+						<canvas id="overlaycanvas" class="hide"></canvas>
 						<img id="photo" class="hide" alt="Snapped photo">
 						<video id="video">Video stream not available.</video>
 						<img id="overlaid">

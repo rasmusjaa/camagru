@@ -1,6 +1,6 @@
 <?php
-
-session_start();
+if (!isset($_SESSION))
+	session_start();
 if (!empty($_SESSION['user']))
 	header("Location: /index.php");
 
@@ -17,6 +17,8 @@ if ($_GET['status'] == 'verify')
 	// validate username
 	if (empty($_POST['username']))
 		$msg = '<p style="color: red;">Missing username.</p>';
+	elseif(preg_match('/[^a-z_\-0-9]/i', $_POST['username']))
+		$msg = '<p style="color: red;">Invalid characters in username.</p>';
 	// validate mail
 	elseif (empty($_POST['email']))
 		$msg = '<p style="color: red;">Missing email.</p>';
@@ -69,7 +71,7 @@ if ($_GET['status'] == 'verify')
 							<form action="create.php?status=verify" method="post">
 								<p>
 									<input placeholder="Email" maxlength="256" type="email" name="email">
-									<label><small>Username must be 4-24 characters</small></label>
+									<label><small>Username must be 4-24 characters. Alphanumerics, hyphens and underscores allowed</small></label>
 									<input placeholder="Username" minlength="4" maxlength="24" type="text" name="username">
 									<label><small>Password must be 8-64 characters</small></label>
 									<input placeholder="Password" minlength="8" maxlength="64" type="password" name="password">

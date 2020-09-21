@@ -1,5 +1,5 @@
 var width = 1080;    // Scale the photo width to this
-var height = 0;     // Computed based on the input stream
+var height = 810;     // Computed based on the input stream
 
 // capture.php vars
 var streaming = false;
@@ -20,6 +20,9 @@ var overlaid = null;
 var uploaded = false;
 
 var overlay_src = null;
+var overlays = [];
+var overlaycanvas;
+var overlaylist;
 
 // index.php vars
 var img_feed = null;
@@ -36,7 +39,9 @@ function startup() {
 	savebutton = document.getElementById('savebutton');
 	sidebar = document.getElementById('sidebar');
 	overlaid = document.getElementById('overlaid');
+	overlaycanvas = document.getElementById('overlaycanvas');
 	warning = document.getElementById('warning')
+	overlaylist = document.getElementById('overlays')
 
 	img_feed = document.getElementById('img_feed');
 
@@ -94,18 +99,32 @@ function startup() {
 
 		document.querySelectorAll('.overlay').forEach(item => {
 			item.addEventListener('click', function(ev) {
-				var x = document.querySelector(".chosen");
-				if (x)
-					x.classList.remove("chosen");
 				overlay_src = item.firstChild;
-				overlay_src.classList.add("chosen");
-				overlaid.src = overlay_src.src;
-				if (!snap_enabled)
-				{
-					snap_enabled = true;
-					enable_snap_button();
-					warning.classList.add("hide");
+				if (overlay_src.classList.contains('chosen')) {
+					overlay_src.classList.remove("chosen");
+					var x = document.querySelector(".chosen");
+					if (!x) {
+						snap_enabled = false;
+						snapbutton.classList.add('hide');
+						if (!uploaded)
+							warning.classList.remove("hide");
+					}
 				}
+				else {
+					overlay_src.classList.add("chosen");
+					if (!snap_enabled)
+					{
+						snap_enabled = true;
+						enable_snap_button();
+						warning.classList.add("hide");
+					}
+				}
+				index = overlays.indexOf(overlay_src.src);
+				if (index > -1)
+					overlays.splice(index, 1);
+				else
+					overlays.push(overlay_src.src);
+				merge_overlays();
 			}, false)
 		})
 
@@ -293,6 +312,7 @@ function takepicture() {
 		context.drawImage(video, 0, 0, width, height);
 		snap_data = canvas.toDataURL('image/png');
 		photo.src = snap_data;
+		overlaylist.classList.add('hide');
 	} else {
 		clearphoto();
 	}
@@ -328,7 +348,6 @@ function formatDate(date) {
 		month = '0' + month;
 	if (day.length < 2) 
 		day = '0' + day;
-	console.log(month.length);
 	if (hour.length < 2) 
 		hour = '0' + hour;
 	if (minute.length < 2) 
@@ -342,6 +361,7 @@ function formatDate(date) {
 
 function first_step_mode() {
 	uploaded = false;
+	overlaylist.classList.remove('hide');
 	photo.classList.add("hide");
 	video.classList.remove("hide");
 	newbutton.classList.add("hide");
@@ -364,6 +384,35 @@ function second_step_mode() {
 	uploadtext.classList.add("hide");
 	newbutton.classList.remove("hide");
 	savebutton.classList.remove("hide");
+}
+
+function merge_overlays() {
+	var ctx = overlaycanvas.getContext("2d");
+	overlaycanvas.setAttribute('width', width);
+	overlaycanvas.setAttribute('height', height);
+	ctx.clearRect(0, 0, width, height);
+	ctx.globalCompositeOperation = 'source-over';
+	var imageObj = new Image();
+	var len = overlays.length;
+	if (len == 0) {
+		overlaid.removeAttribute('src');
+		overlaid.classList.add('hide');
+	}
+	else {
+		overlaid.classList.remove('hide');
+		i = 0;
+		function recursive_overlay() {
+			imageObj.src = overlays[i];
+			imageObj.onload = function() {
+				ctx.drawImage(imageObj, 0, 0, width, height);
+				overlaid.src = overlaycanvas.toDataURL('image/png');
+				i++;
+				if (i < len)
+					recursive_overlay();
+			};
+		}
+		recursive_overlay();
+	}
 }
 
 // After window has loaded

@@ -153,6 +153,10 @@ img {
 	cursor: default;
 }
 
+.photo, .singlephoto img {
+	border: 1px solid #eee;
+}
+
 /* Sidebar */
 
 .right {

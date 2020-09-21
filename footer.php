@@ -1,6 +1,6 @@
 <?php
-
-session_start();
+if (!isset($_SESSION))
+	session_start();
 if (!empty($_SESSION['user']))
 	$msg = '<p>Logged in as ' . $_SESSION['user'] . ', edit your <a href="/account.php">account</a></p>';
 else

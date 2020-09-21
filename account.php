@@ -1,6 +1,6 @@
 <?php
-
-session_start();
+if (!isset($_SESSION))
+	session_start();
 if (empty($_SESSION['user']))
 	header("Location: /login.php");
 
@@ -18,15 +18,16 @@ if ($_GET['status'] == 'verify')
 	}
 
 	//Make sure that the token POST variable exists.
-	if(!isset($_POST['token'])){
+	if(empty($_POST['token']) || !isset($_SESSION['token']))
 		$msg = '<p style="color: red;">Error, modifying account only allowed from this page.</p>';
-	}
 	//It exists, so compare the token we received against the 
 	//token that we have stored as a session variable.
-	elseif(hash_equals($_POST['token'], $_SESSION['token']) === false){
+	elseif(hash_equals($_POST['token'], $_SESSION['token']) === false)
 		$msg = '<p style="color: red;">Error, modifying account only allowed by filling this form.</p>';
-	}
 	// validate username
+	elseif(!empty($_POST['username']) && preg_match('/[^a-z_\-0-9]/i', $_POST['username']))
+		$msg = '<p style="color: red;">Invalid characters in username.</p>';
+	// validate that password has something
 	elseif (empty($_POST['oldpassword']))
 		$msg = '<p style="color: red;">Need current password to confirm changes.</p>';
 	// validate mail
@@ -111,7 +112,7 @@ if ($user_data)
 							<form action="account.php?status=verify" method="post">
 								<p>
 									<input placeholder="New Email" maxlength="256" type="email" name="email"><br>
-									<label><small>Username must be 4-24 characters</small></label>
+									<label><small>Username must be 4-24 characters. Alphanumerics, hyphens and underscores allowed</small></label>
 									<input placeholder="New Username" minlength="4" maxlength="24" type="text" name="username"><br>
 									<label><small>New password must be 8-64 characters</small></label>
 									<input placeholder="New Password" minlength="8" maxlength="64" type="password" name="newpassword"><br>
