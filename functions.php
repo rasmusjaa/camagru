@@ -22,10 +22,10 @@ if (!empty($_SESSION['page']))
 }
 $end = $start + $images_per_page;
 
-if ($_POST['function'] == 'reload_user_images')
+if ($_POST && $_POST['function'] == 'reload_user_images')
 	reload_user_images($_POST['value1']);
 
-if ($_POST['function'] == 'reload_all_images')
+if ($_POST && $_POST['function'] == 'reload_all_images')
 	reload_all_images();
 
 function reload_user_images($user)

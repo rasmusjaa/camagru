@@ -61,24 +61,16 @@ function modify_user($user, $email, $login, $newpassword, $notifications, $oldpa
 			$stmt->execute([$email, $user]);
 		}
 		
-		if (!empty($login))
-		{
-			$stmt = $pdo->prepare(
-				"UPDATE users SET login = ? WHERE login = ?"
-			);
-			$stmt->execute([$login, $user]);
-		}
-
 		if (!empty($newpassword))
 		{
 			$hashed_pw = password_hash($newpassword, PASSWORD_BCRYPT);
-
+			
 			$stmt = $pdo->prepare(
 				"UPDATE users SET pass = ? WHERE login = ?"
 			);
 			$stmt->execute([$hashed_pw, $user]);
 		}
-
+		
 		if (isset($notifications) && $notifications = 'yes')
 		{
 			$stmt = $pdo->prepare(
@@ -92,6 +84,14 @@ function modify_user($user, $email, $login, $newpassword, $notifications, $oldpa
 				"UPDATE users SET status = 2 WHERE login = ?"
 			);
 			$stmt->execute([$user]);
+		}
+		
+		if (!empty($login))
+		{
+			$stmt = $pdo->prepare(
+				"UPDATE users SET login = ? WHERE login = ?"
+			);
+			$stmt->execute([$login, $user]);
 		}
 
 		return (0);
@@ -275,7 +275,7 @@ function delete_user_image($id)
 			echo 'No image to remove';
 			return (-1);
 		}
-		$file = __DIR__ . '/../user_images/' . $data[filename] . '.png';
+		$file = __DIR__ . '/../user_images/' . $data['filename'] . '.png';
 		if (!unlink($file)) {  
 			echo ("Image cannot be deleted due to an error");
 			return (-1); 

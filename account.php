@@ -8,7 +8,7 @@ include ('functions/db_functions.php');
 
 $msg = '<p>Fill at least one field that you want to modify and your old password</p>';
 
-if ($_GET['status'] == 'verify')
+if ($_GET && $_GET['status'] == 'verify')
 {
 	if (!empty($_POST['newpassword']))
 	{
@@ -36,7 +36,7 @@ if ($_GET['status'] == 'verify')
 	// validate password
 	elseif (!empty($_POST['newpassword']) && (!$uppercase || !$lowercase || !$number))
 		$msg = '<p style="color: red;">Invalid password, include at least 1 uppercase letter, 1 lowercase letter and 1 number.</p>';
-	elseif (login_user($_POST['username'], $_POST['password']) == FALSE)
+	elseif (login_user($_POST['username'], $_POST['oldpassword']) == FALSE)
 		$msg = '<p style="color: red;">Current password incorrect.</p>';
 	else
 	{
@@ -55,7 +55,7 @@ if ($_GET['status'] == 'verify')
 			$msg = '<p style="color: red;">Something went wrong, try again.</p>';
 	}
 }
-if ($_GET['status'] == 'done')
+if ($_GET &&$_GET['status'] == 'done')
 {
 	$msg = '<p style="color: green;">Account modified successfully.</p>';
 }
