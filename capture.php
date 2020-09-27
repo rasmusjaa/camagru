@@ -40,7 +40,7 @@ include ('functions.php');
 					</div>
 					<p id="warning">Filter has to be selected before using webcam photos</p>
 					<button id="snapbutton" class="btn red solid center hide">Take photo</button>
-					<p id="uploadtext">Or upload image (will be resized to 4:3 aspepct ratio):</p>
+					<p id="uploadtext">Or upload image (will be resized to 4:3 aspect ratio):</p>
 					<input type="file" accept="image/*" id="uploadbutton" name="image" onchange="uploadpicture(event)" class="center">
 					<button id="newbutton" class="btn black solid center hide">New photo</button>
 					<button id="savebutton" class="btn green solid center hide">Save photo</button>
