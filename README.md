@@ -3,7 +3,7 @@
 
 ![Screenshot1](https://github.com/rasmusjaa/camagru/blob/master/cam-screenshot.png)
 
-The aim of this project was to create a small Instagram-like site that enables users to make, share, comment and like photos edited with filters. Allowd languages were PHP and JavaScript (frameworks forbidden), MySQL and CSS (framework allowed if it doesn't contain JS).
+The aim of this project was to create a small Instagram-like site that enables users to make, share, comment and like photos edited with filters. Allowed languages were PHP and JavaScript (just standarad libraries, frameworks forbidden), MySQL and CSS (framework allowed if it doesn't contain JS).
 
 ### Notes
 * Users can create account and edit account information
