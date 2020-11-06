@@ -1,7 +1,7 @@
 # <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Screenshot1](https://github.com/rasmusjaa/warehouse-reaktor/blob/main/cam-screenshot.png)
+![Screenshot1](https://github.com/rasmusjaa/camagru/blob/master/cam-screenshot.png)
 
 The aim of this project was to create a small Instagram-like site that enables users to make, share, comment and like photos edited with filters. Allowd languages were PHP and JavaScript (frameworks forbidden), MySQL and CSS (framework allowed if it doesn't contain JS).
 
@@ -32,4 +32,4 @@ To run this project locally first I suggest having PHP MySQL Apache environment 
 
 To make use of webcam features you have to allow the site to access your webcam with your browser.
 
-![Screenshot2](https://github.com/rasmusjaa/warehouse-reaktor/blob/main/front-screenshot.png)
+![Screenshot2](https://github.com/rasmusjaa/camagru/blob/master/front-screenshot.png)
