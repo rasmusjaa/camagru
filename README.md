@@ -12,7 +12,7 @@ The aim of this project was to create a small Instagram-like site that enables u
 * SQL and JS/HTML injections are handled
 * Users have a page where they can take or upload photos and see and remove their previous photos
 * Photos taken with webcam must have at least one filter on them and can have multiple filters
-* Users can comment and like photos
+* Only logged in users can comment and like photos
 * Email is sent to user if their photo is commented. This feature can be turned off in user settings
 
 ## Built With
