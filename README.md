@@ -24,7 +24,7 @@ The aim of this project was to create a small Instagram-like site that enables u
 
 ## Running project
 
-To run this project locally first I suggest having PHP MySQL Apache environment installed, for example Bitnami WAMP/MAMP. Then:
+To run this project locally you must have *AMP environment installed, for example Bitnami WAMP/MAMP. Then:
 1. Clone the repo to htdocs folder in apache2
 2. Change smtp server information to use your own mail. If you use gmail just change username and password (fetched from file on server at the moment to not show password in source code) on htdocs/functions/sendmail.php
 3. run installation script on http://localhost:8080/config/setup.php
